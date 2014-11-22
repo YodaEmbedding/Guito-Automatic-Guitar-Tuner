@@ -20,13 +20,11 @@ import at.abraxas.amarino.AmarinoIntent;
 public class MainActivity extends Activity
 {
 	private static final String TAG = "MainActivity";
-
-	// change this to your Bluetooth device address
-	private static final String DEVICE_ADDRESS = "98:D3:31:60:05:C7";
-
+	private static final String DEVICE_ADDRESS = "98:D3:31:60:05:C7"; // change this to your Bluetooth device address
 	private ArduinoReceiver arduinoReceiver = new ArduinoReceiver();
-
 	private Context context = this; // getApplicationContext();
+	// private recorderThread audioThread = new recorderThread();
+	private MicrophoneThread microphoneThread = new MicrophoneThread();
 
 
 	@Override
@@ -36,17 +34,19 @@ public class MainActivity extends Activity
 		setContentView(R.layout.activity_main);
 
 		// get handles to Views defined in our layout file
-		TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
+		final TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
 		Button btnTuneStandard = (Button) findViewById(R.id.btnTuneStandard);
 
-
-		Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'A', "test");
+		// audioThread.start();
+		microphoneThread.start();
 
 		btnTuneStandard.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
 			{
-				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'A', "test");
+				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'A', "btnTuneStandard");
+				// numCurrentPitch.setText(audioThread.frequency + "");
+				numCurrentPitch.setText(microphoneThread.frequency + "");
 			}
 		});
 	}
@@ -105,7 +105,6 @@ public class MainActivity extends Activity
 				if (data != null)
 				{
 					TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
-					numCurrentPitch.setText(data);
 				}
 			}
 		}
