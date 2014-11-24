@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-
 import at.abraxas.amarino.Amarino;
 import at.abraxas.amarino.AmarinoIntent;
 
@@ -24,7 +23,7 @@ public class MainActivity extends Activity
 	private ArduinoReceiver arduinoReceiver = new ArduinoReceiver();
 	private Context context = this; // getApplicationContext();
 	// private recorderThread audioThread = new recorderThread();
-	private MicrophoneThread microphoneThread = new MicrophoneThread();
+	private MicrophoneThread audioThread = new MicrophoneThread();
 
 
 	@Override
@@ -37,16 +36,16 @@ public class MainActivity extends Activity
 		final TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
 		Button btnTuneStandard = (Button) findViewById(R.id.btnTuneStandard);
 
-		// audioThread.start();
-		microphoneThread.start();
+		audioThread.start();
+		// microphoneThread.start();
 
 		btnTuneStandard.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
 			{
-				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'A', "btnTuneStandard");
-				// numCurrentPitch.setText(audioThread.frequency + "");
-				numCurrentPitch.setText(microphoneThread.frequency + "");
+				numCurrentPitch.setText(audioThread.frequency + "");
+                // numCurrentPitch.setText(microphoneThread.frequency + "");
+                Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'A', audioThread.frequency);
 			}
 		});
 	}
@@ -105,6 +104,7 @@ public class MainActivity extends Activity
 				if (data != null)
 				{
 					TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
+                    // numCurrentPitch.setText(data);
 				}
 			}
 		}

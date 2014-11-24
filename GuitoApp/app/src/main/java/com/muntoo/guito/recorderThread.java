@@ -13,6 +13,8 @@ class recorderThread extends Thread
 	public boolean recording;  //variable to start or stop recording
 	public int frequency; //the public variable that contains the frequency value "heard", it is updated continually while the thread is running.
 
+    private int sampleRateInHz = 44100;
+
 	public recorderThread()
 	{
 	}
@@ -25,10 +27,10 @@ class recorderThread extends Thread
 		short audioData[];
 		int bufferSize;
 
-		bufferSize = AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO,
+		bufferSize = AudioRecord.getMinBufferSize(sampleRateInHz, AudioFormat.CHANNEL_IN_MONO,
 				AudioFormat.ENCODING_PCM_16BIT) * 3; //get the buffer size to use with this audio record
 
-		recorder = new AudioRecord(AudioSource.MIC, 8000, AudioFormat.CHANNEL_IN_MONO,
+		recorder = new AudioRecord(AudioSource.MIC, sampleRateInHz, AudioFormat.CHANNEL_IN_MONO,
 				AudioFormat.ENCODING_PCM_16BIT, bufferSize); //instantiate the AudioRecorder
 
 		recording = true; //variable to use start or stop recording
@@ -68,7 +70,7 @@ class recorderThread extends Thread
 					}
 
 
-					frequency = (8000 / bufferSize) * (numCrossing / 2);  // Set the audio Frequency to half the number of zero crossings, times the number of samples our buffersize is per second.
+					frequency = (sampleRateInHz / bufferSize) * (numCrossing / 2);  // Set the audio Frequency to half the number of zero crossings, times the number of samples our buffersize is per second.
 
 				}//else recorder started
 

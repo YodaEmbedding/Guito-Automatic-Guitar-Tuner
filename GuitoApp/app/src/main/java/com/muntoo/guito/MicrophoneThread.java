@@ -10,11 +10,11 @@ import android.media.MediaRecorder;
 public class MicrophoneThread extends Thread
 {
 	public boolean isRecording = true;  //variable to start or stop recording
-	public int frequency = 101010; //the public variable that contains the frequency value "heard", it is updated continually while the thread is running.
+	public int frequency = 0; //the public variable that contains the frequency value "heard", it is updated continually while the thread is running.
 
 	private int channelConfig = AudioFormat.CHANNEL_IN_MONO;
 	private int audioFormat = AudioFormat.ENCODING_PCM_16BIT;
-	private int blockSize = 8000;
+	private int blockSize = 1024;
 	private int sampleRateInHz = 44100;
 
 	public MicrophoneThread()
@@ -27,19 +27,19 @@ public class MicrophoneThread extends Thread
 	{
 		try
 		{
-			// int bufferSize = AudioRecord.getMinBufferSize(frequency,
-			// AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-			int bufferSize = AudioRecord.getMinBufferSize(
+			blockSize = AudioRecord.getMinBufferSize(
 					sampleRateInHz, channelConfig, audioFormat);
 
 			AudioRecord audioRecord = new AudioRecord(
 					MediaRecorder.AudioSource.MIC, sampleRateInHz,
-					channelConfig, audioFormat, bufferSize * 2);
+					channelConfig, audioFormat, blockSize * 2);
 
 			short[] buffer = new short[blockSize];
 			double[] toTransform = new double[blockSize];
 
 			audioRecord.startRecording();
+
+            while(audioRecord.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING);
 
 			while(isRecording)
 			{
@@ -53,16 +53,16 @@ public class MicrophoneThread extends Thread
 				}
 
 				// transformer.ft(toTransform);
-				// publishProgress(toTransform);
 			}
 
 			audioRecord.stop();
+            audioRecord.release();
 
 		} catch (Throwable t)
 		{
 			t.printStackTrace();
 			// Log.e("AudioRecord", "Recording Failed");
-			frequency = 666;
+			frequency = 1;
 		}
 	}
 
