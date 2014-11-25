@@ -39,14 +39,27 @@ int angularVelocityToPower(double w)
 
 // Spin motor at given power [-255, 255]
 void rotateMotor(int pwr)
-{  
+{
+  int val = constrain(pwr, -255, 255);
+  val = map(pwr, -255, 255, SERVO_MIN, SERVO_MAX);
+
+#ifdef SERVO_WRITEUS
+  if(pwr == 0)
+  {
+    myservo.writeMicroseconds(SERVO_MIDPOINT);
+  }
+  else
+  {
+    myservo.writeMicroseconds(val);
+  }
+#else
   if(pwr == 0)
   {
     myservo.write(SERVO_MIDPOINT);
   }
   else
   {
-    int val = map(pwr, -255, 255, SERVO_MIN, SERVO_MAX);
     myservo.write(val);
   }
+#endif
 }

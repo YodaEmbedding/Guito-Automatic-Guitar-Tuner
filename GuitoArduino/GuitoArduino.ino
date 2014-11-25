@@ -11,6 +11,7 @@
 #define ENABLE_BT
 // #define ENABLE_PID
 #define ENABLE_SERVO
+// #define SERVO_WRITEUS
 
 
 #include "Arduino.h"
@@ -43,6 +44,13 @@ const double PWR_OVER_W = 255.0 / (360.0 * 0.25);
 
 // Motor
 const int PIN_SERVO = 9;
+
+#ifdef SERVO_WRITEUS
+const int SERVO_RADIUS = 200;
+const int SERVO_MIDPOINT = 1500;
+const int SERVO_MIN = SERVO_MIDPOINT - SERVO_RADIUS; // 1300;
+const int SERVO_MAX = SERVO_MIDPOINT + SERVO_RADIUS; // 1700;
+#else
 // Note that actual output commands are modulated
 // so that it's between [t-0.2ms, t+0.2ms] pulses + 20ms pulse
 // (When using PWM, not PPM)
@@ -53,6 +61,8 @@ const int SERVO_RADIUS = 18;
 const int SERVO_MIDPOINT = 94;
 const int SERVO_MIN = SERVO_MIDPOINT - SERVO_RADIUS; // 76;
 const int SERVO_MAX = SERVO_MIDPOINT + SERVO_RADIUS; // 112;
+#endif
+
 bool stopped = false;
 int power = 0;
 
