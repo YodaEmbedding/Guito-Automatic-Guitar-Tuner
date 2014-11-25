@@ -9,6 +9,9 @@
 #include "Motor.h"
 
 
+Servo myservo;
+
+
 // Determine how much string needs to be "removed" (in milimeters)
 // based on goal frequency and current frequency
 int pitchToDistance(int freq_goal, int freq_curr)
@@ -34,19 +37,16 @@ int angularVelocityToPower(double w)
 }
 
 
-// Spin motor at given power
+// Spin motor at given power [-255, 255]
 void rotateMotor(int pwr)
 {  
   if(pwr == 0)
   {
-    analogWrite(PIN_SERVO, 0);
-  }
-  else if(pwr > 0)
-  {
-    analogWrite(PIN_SERVO, pwr);
+    myservo.write(SERVO_MIDPOINT);
   }
   else
   {
-    analogWrite(PIN_SERVO, -pwr);
+    int val = map(pwr, -255, 255, SERVO_MIN, SERVO_MAX);
+    myservo.write(val);
   }
 }

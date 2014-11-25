@@ -10,6 +10,7 @@
 
 
 #include <MeetAndroid.h>
+#include "Arduino.h"
 
 
 extern MeetAndroid meetAndroid;
@@ -17,11 +18,9 @@ extern int frequency;
 extern int goalFrequency;
 extern bool stopped;
 
-/*
 
 void receiveCommand(byte flag, byte numOfValues);
 void receivePitch(byte flag, byte numOfValues);
-*/
 
 
 #endif

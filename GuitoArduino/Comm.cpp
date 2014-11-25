@@ -8,9 +8,7 @@
 // #include <MeetAndriod.h>
 #include "Arduino.h"
 #include "Comm.h"
-
-
-void rotateMotor(int);
+#include "Motor.h"
 
 
 // Called whenever a command is received over the Bluetooth connection

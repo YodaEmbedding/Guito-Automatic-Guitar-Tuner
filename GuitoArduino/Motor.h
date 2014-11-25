@@ -9,6 +9,9 @@
 #define __MOTOR_H
 
 
+#include <Servo.h>
+
+
 extern const int RADIUS;
 extern const int GEAR_RATIO;
 extern const double PWR_OVER_W;
@@ -18,6 +21,12 @@ extern const int PIN_ENABLE;
 extern const int PIN_LEFT;
 extern const int PIN_RIGHT;
 
+extern const int SERVO_MIN;
+extern const int SERVO_MAX;
+extern const int SERVO_MIDPOINT;
+
+
+extern Servo myservo;
 
 
 int pitchToDistance(int freq_goal, int freq_curr);

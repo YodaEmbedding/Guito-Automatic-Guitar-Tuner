@@ -15,26 +15,30 @@
 #include <Servo.h>
 
 
-Servo myservo;  // create servo object to control a servo
-
-
-
 #define TEST
 
 
-//MeetAndroid meetAndroid;
+MeetAndroid meetAndroid;
 
-const int RADIUS = 10;
-const int GEAR_RATIO = 100 / 10;
-const double PWR_OVER_W = 255.0 / (180.0 / RADIUS);
 
-// Motor pins
-const int PIN_SERVO = 9;
+// TORQUE = 38 oz-in torque @ 6 V
+const int RADIUS = 30;
+const int GEAR_RATIO = 1;
+// PWR / w  ~=  255 / (360 * rps)
+const double PWR_OVER_W = 255.0 / (360.0 * 0.25);
+
+
+// Motor
 /*
+DC Motor
 const int PIN_ENABLE = 11;
 const int PIN_LEFT = 10;
 const int PIN_RIGHT = 5;
 */
+const int PIN_SERVO = 9;
+const int SERVO_MIN = 75;
+const int SERVO_MAX = 113;
+const int SERVO_MIDPOINT = 94;
 bool stopped = false;
 
 int frequency = 0;
@@ -49,16 +53,12 @@ double pid_setpoint = 0.0;
 PID pid(&pid_in, &pid_out, &pid_setpoint, 1.0, 0.0, 0.0, DIRECT);
 
 
-//void receiveCommand(byte flag, byte numOfValues);
-//void receivePitch(byte flag, byte numOfValues);
-
-
 void setup()
 {
   // Turn on Bluetooth communication at 9600 baud rate
-  // Serial.begin(9600);
-  // meetAndroid.registerFunction(receivePitch, 'A');
-  // meetAndroid.registerFunction(receiveCommand, 'C');
+  Serial.begin(9600);
+  meetAndroid.registerFunction(receivePitch, 'A');
+  meetAndroid.registerFunction(receiveCommand, 'C');
 
   // Construct tables
   InitializeTuningTable();
@@ -68,10 +68,8 @@ void setup()
   pid.SetSampleTime(200);
   pid.SetMode(AUTOMATIC);
 
-
-  // Set motor pins to OUTPUT
-  // pinMode(PIN_SERVO, OUTPUT);
-  myservo.attach(9);
+  // Turn on servo motor
+  myservo.attach(PIN_SERVO);
 
   stopped = false;
 }
@@ -83,7 +81,7 @@ void loop()
 #ifdef TEST
 
   static int lastTime = millis();
-  if(lastTime + 20 < millis())
+  if(lastTime + 200 < millis())
   {
     lastTime = millis();
 
@@ -105,7 +103,6 @@ void loop()
 
 
 
-  // change in angle?
   // power   ~= velocity
   // degrees ~= distance
   // Note that power control is virtually instantaneous.
@@ -113,16 +110,12 @@ void loop()
   // 
   // out       = velocity
   // in/setp   = distance
-  // YEAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-  // too easy yo
   // 
   // Error term = pitchToDegrees(goal, current)
   // Should I record starting position, or let it vary depending on changing setpoint?
   // Probably latter? but why?? hmmm. Do some math to check.
   // 
 
-  //rotateMotor(255);
-  
 
   if(!stopped)
   {
@@ -132,19 +125,12 @@ void loop()
     // Convert pid_out to power
     power = angularVelocityToPower(pid_out);
 
-    //rotateMotor(255);
-    
-    myservo.write(map(power, 0, 255, 0, 180));
-    delay(15);
+    rotateMotor(power);
   }
   else
   {
-    // rotateMotor(0); // Coast motors
+    // rotateMotor(0);
+    // myservo.detach(); // Coast motors
   }
 }
-
-
-
-
-
 
