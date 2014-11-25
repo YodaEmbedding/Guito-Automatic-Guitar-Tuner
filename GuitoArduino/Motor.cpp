@@ -24,8 +24,8 @@ int pitchToDistance(int freq_goal, int freq_curr)
 // Formula to convert distance of guitar string to tighten into motor degrees
 int distanceToDegrees(int dist)
 {
-  // totally incorrect
-  return(dist * RADIUS * 180.0 / PI);
+  // Theta = x / r
+  return(DEG_OVER_RAD * dist / AXLE_RADIUS);
 }
 
 

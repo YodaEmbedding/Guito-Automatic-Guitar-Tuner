@@ -38,6 +38,7 @@ MeetAndroid meetAndroid;
 
 // TORQUE = 38 oz-in torque @ 6 V
 const int RADIUS = 30;
+const int AXLE_RADIUS = 5;
 const int GEAR_RATIO = 1;
 // PWR / w  ~=  255 / (360 * rps)
 const double PWR_OVER_W = 255.0 / (360.0 * 0.25);
@@ -115,7 +116,7 @@ void loop()
 #ifdef TEST
   // Generate fake values for frequency
   static int lastTime = millis();
-  if(lastTime + 200 < millis())
+  if((lastTime + 200) <= millis())
   {
     lastTime = millis();
 
@@ -140,14 +141,10 @@ void loop()
   // power   ~= velocity
   // degrees ~= distance
   // Note that power control is virtually instantaneous.
-  // So, integral term not needed...? PD control? 
+  // So, integral term not needed...? PD control?
   // 
   // out       = velocity
   // in/setp   = distance
-  // 
-  // Error term = pitchToDegrees(goal, current)
-  // Should I record starting position, or let it vary depending on changing setpoint?
-  // Probably latter? but why?? hmmm. Do some math to check.
 #endif
 
   if(!stopped)
@@ -159,7 +156,7 @@ void loop()
     // Convert pid_out to power
     power = angularVelocityToPower(pid_out);
 #else
-    if(frequency >= goalFrequency - 1 && frequency <= goalFrequency + 1)
+    if((frequency >= (goalFrequency - 1)) && (frequency <= (goalFrequency + 1)))
     {
       power = 0;
     }
@@ -168,13 +165,19 @@ void loop()
       power = constrain((goalFrequency - frequency) * 10, -255, 255);
     }
 #endif
-
-#ifdef ENABLE_BT
-    meetAndroid.send(power);
-#endif
     
 #ifdef ENABLE_SERVO
     rotateMotor(power);
+#endif
+
+#ifdef ENABLE_BT
+    static int lastSent = millis();
+    if((lastSent + 500) <= millis())
+    {
+      lastSent = millis();
+
+      meetAndroid.send(power);
+    }
 #endif
   }
   else

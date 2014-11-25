@@ -9,10 +9,14 @@
 #define __MOTOR_H
 
 
+#include "Arduino.h"
 #include <Servo.h>
 
 
+const int DEG_OVER_RAD = 180.0 / PI;
+
 extern const int RADIUS;
+extern const int AXLE_RADIUS;
 extern const int GEAR_RATIO;
 extern const double PWR_OVER_W;
 

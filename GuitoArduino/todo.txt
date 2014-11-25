@@ -1,5 +1,9 @@
 Fix PID gains
 Get conversion constants
+	AXLE_RADIUS
+	RADIUS       // irrelevant?
+	PWR_OVER_W
+
 Distance Estimation algorithm
 Pitch tracker
 
