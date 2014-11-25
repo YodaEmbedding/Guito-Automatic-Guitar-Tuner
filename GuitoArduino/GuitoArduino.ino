@@ -4,16 +4,20 @@
 // Description: Receives input pitch (Hz) over Bluetooth.
 //              Runs transfer function converting Hz -> degrees and feeds into PID controller.
 //              Outputs to motor.
+// License:     GPLv3
 
 
 #include <MeetAndroid.h>
 #include <PID_v1.h>
+#include "Notes.h"
+#include "Comm.h"
 
 
 MeetAndroid meetAndroid;
 
 const int RADIUS = 10;
 const int GEAR_RATIO = 100 / 10;
+const double PWR_OVER_W = 255.0 / (180.0 / RADIUS);
 
 // Motor pins
 const int PIN_ENABLE = 11;
@@ -24,12 +28,17 @@ bool stopped = false;
 int frequency = 0;
 int goalFrequency = 440;
 int distance = 0;
+int power = 0;
 
 // PID variables
 double pid_in = 0.0;
 double pid_out = 0.0;
 double pid_setpoint = 0.0;
 PID pid(&pid_in, &pid_out, &pid_setpoint, 1.0, 0.0, 0.0, DIRECT);
+
+
+void receiveCommand(byte flag, byte numOfValues);
+void receivePitch(byte flag, byte numOfValues);
 
 
 void setup()
@@ -39,11 +48,14 @@ void setup()
   meetAndroid.registerFunction(receivePitch, 'A');
   meetAndroid.registerFunction(receiveCommand, 'C');
   
+  // Construct tables
+  InitializeTuningTable();
+
   // Set up PID controller
   pid.SetOutputLimits(-255.0, 255.0);
   pid.SetSampleTime(200);
   pid.SetMode(AUTOMATIC);
-  
+
   // Set motor pins to OUTPUT
   pinMode(PIN_ENABLE, OUTPUT);
   pinMode(PIN_LEFT, OUTPUT);
@@ -62,18 +74,23 @@ void loop()
   // (Transfer function)
   distance = pitchToDistance(goalFrequency, frequency);
 
-  // Totally incorrect variable settings yo, wtf is dis. Fix it!!!!1
+  // pid_error = pid_setpoint - pid_in
   pid_setpoint = distanceToDegrees(distance);
-  pid_in = pid_setpoint - distanceToDegrees(distance);
+  pid_in = 0;
+
+
 
   // change in angle?
   // power   ~= velocity
   // degrees ~= distance
   // Note that power control is virtually instantaneous.
   // So, integral term not needed...? PD control? 
-  //
-  // pid_in/out == power?
-  // pid_setpoint == degrees?
+  // 
+  // out       = velocity
+  // in/setp   = distance
+  // YEAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+  // too easy yo
+  // 
   // Error term = pitchToDegrees(goal, current)
   // Should I record starting position, or let it vary depending on changing setpoint?
   // Probably latter? but why?? hmmm. Do some math to check.
@@ -82,51 +99,18 @@ void loop()
   
   if(!stopped)
   {
-    // Compute how much to turn the motor, and output.
+    // Compute dTheta/dt
     pid.Compute();
-    rotateMotor(pid_out);
+
+    // Convert pid_out to power
+    power = angularVelocityToPower(pid_out);
+
+    rotateMotor(power);
   }
   else
   {
     rotateMotor(0); // Coast motors
   }
-}
-
-
-// Called whenever a command is received over the Bluetooth connection
-void receiveCommand(byte flag, byte numOfValues)
-{
-  string command = meetAndroid.getString();
-
-  switch(string[0])
-  {
-  case 0:
-    // null
-    break;
-
-  case 'X':
-    // Emergency stop
-    // Cut power to system (coast motors)
-    break;
-
-  case 'S':
-    // Standard tuning
-    break;
-
-  case 'N':
-    // Tune next string
-    break;
-
-  default:
-    break;
-  }
-}
-
-
-// Called whenever a value is received over the Bluetooth connection
-void receivePitch(byte flag, byte numOfValues)
-{
-  frequency = meetAndroid.getInt();
 }
 
 
@@ -147,23 +131,31 @@ int distanceToDegrees(int dist)
 }
 
 
+// Formula to convert angularVelocity in degrees to power output
+int angularVelocityToPower(double w)
+{
+  return w * PWR_OVER_W;
+  // w * k * (255 - 0) / 100;
+}
+
+
 // Spin motor at given power
-void rotateMotor(int power)
+void rotateMotor(int pwr)
 {
   // Eh. Get code from some library?
   // Also, remember DC motor has min/max ~127, 255
   // So need to implement directional PID control
   
-  if(power == 0)
+  if(pwr == 0)
   {
     digitalWrite(PIN_ENABLE, LOW);
     analogWrite(PIN_LEFT, 0);
     analogWrite(PIN_RIGHT, 0);
   }
-  else if(power > 0)
+  else if(pwr > 0)
   {
     digitalWrite(PIN_ENABLE, HIGH);
-    analogWrite(PIN_LEFT, power);
+    analogWrite(PIN_LEFT, pwr);
     analogWrite(PIN_RIGHT, 0);
   }
   else
@@ -171,7 +163,12 @@ void rotateMotor(int power)
     // rotate in opposite direction
     digitalWrite(PIN_ENABLE, HIGH);
     analogWrite(PIN_LEFT, 0);
-    analogWrite(PIN_RIGHT, -power);
+    analogWrite(PIN_RIGHT, -pwr);
   }
 }
+
+
+
+
+
 
