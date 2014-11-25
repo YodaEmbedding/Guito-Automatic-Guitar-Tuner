@@ -11,7 +11,9 @@
 
 String tuning_notes[TUNING_COUNT] = {
   // <Tuning Name>, <Notes from top/thickest to bottom/thinnest string>
-  "S, E2 A2 D3 G3 B3 E4" // Standard Tuning
+  "S, E2 A2 D3 G3 B3 E4", // Standard Tuning
+  "D, D2 A2 D3 G3 B3 E4", // Drop D
+  "E, Eb2 Ab2 Db3 Gb3 Bb3 Eb4" // E flat (Standard, half-step down)
 };
 
 Tuning tuning_table[TUNING_COUNT];

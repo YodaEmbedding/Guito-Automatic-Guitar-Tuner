@@ -36,28 +36,17 @@ int angularVelocityToPower(double w)
 
 // Spin motor at given power
 void rotateMotor(int pwr)
-{
-  // Eh. Get code from some library?
-  // Also, remember DC motor has min/max ~127, 255
-  // So need to implement directional PID control
-  
+{  
   if(pwr == 0)
   {
-    digitalWrite(PIN_ENABLE, LOW);
-    analogWrite(PIN_LEFT, 0);
-    analogWrite(PIN_RIGHT, 0);
+    analogWrite(PIN_SERVO, 0);
   }
   else if(pwr > 0)
   {
-    digitalWrite(PIN_ENABLE, HIGH);
-    analogWrite(PIN_LEFT, pwr);
-    analogWrite(PIN_RIGHT, 0);
+    analogWrite(PIN_SERVO, pwr);
   }
   else
   {
-    // rotate in opposite direction
-    digitalWrite(PIN_ENABLE, HIGH);
-    analogWrite(PIN_LEFT, 0);
-    analogWrite(PIN_RIGHT, -pwr);
+    analogWrite(PIN_SERVO, -pwr);
   }
 }

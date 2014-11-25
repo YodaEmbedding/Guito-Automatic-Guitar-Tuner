@@ -9,6 +9,9 @@
 #define __NOTES_H
 
 
+#include "Arduino.h"
+
+
 // Classes
 class Tuning
 {
@@ -39,7 +42,9 @@ const String chromatic_scale_flat[12] = {
 
 // Tunings
 const int TUNING_STANDARD = 0;
-const int TUNING_COUNT = 1;
+const int TUNING_DROPD = 1;
+const int TUNING_EFLAT = 2;
+const int TUNING_COUNT = 3;
 
 // Tables
 extern String tuning_notes[];

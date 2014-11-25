@@ -12,18 +12,29 @@
 #include "Notes.h"
 #include "Comm.h"
 #include "Motor.h"
+#include <Servo.h>
 
 
-MeetAndroid meetAndroid;
+Servo myservo;  // create servo object to control a servo
+
+
+
+#define TEST
+
+
+//MeetAndroid meetAndroid;
 
 const int RADIUS = 10;
 const int GEAR_RATIO = 100 / 10;
 const double PWR_OVER_W = 255.0 / (180.0 / RADIUS);
 
 // Motor pins
+const int PIN_SERVO = 9;
+/*
 const int PIN_ENABLE = 11;
 const int PIN_LEFT = 10;
 const int PIN_RIGHT = 5;
+*/
 bool stopped = false;
 
 int frequency = 0;
@@ -38,17 +49,17 @@ double pid_setpoint = 0.0;
 PID pid(&pid_in, &pid_out, &pid_setpoint, 1.0, 0.0, 0.0, DIRECT);
 
 
-void receiveCommand(byte flag, byte numOfValues);
-void receivePitch(byte flag, byte numOfValues);
+//void receiveCommand(byte flag, byte numOfValues);
+//void receivePitch(byte flag, byte numOfValues);
 
 
 void setup()
 {
   // Turn on Bluetooth communication at 9600 baud rate
-  Serial.begin(9600);
-  meetAndroid.registerFunction(receivePitch, 'A');
-  meetAndroid.registerFunction(receiveCommand, 'C');
-  
+  // Serial.begin(9600);
+  // meetAndroid.registerFunction(receivePitch, 'A');
+  // meetAndroid.registerFunction(receiveCommand, 'C');
+
   // Construct tables
   InitializeTuningTable();
 
@@ -57,10 +68,10 @@ void setup()
   pid.SetSampleTime(200);
   pid.SetMode(AUTOMATIC);
 
+
   // Set motor pins to OUTPUT
-  pinMode(PIN_ENABLE, OUTPUT);
-  pinMode(PIN_LEFT, OUTPUT);
-  pinMode(PIN_RIGHT, OUTPUT);
+  // pinMode(PIN_SERVO, OUTPUT);
+  myservo.attach(9);
 
   stopped = false;
 }
@@ -69,8 +80,21 @@ void setup()
 void loop()
 {
   // Receive pitch from android device
+#ifdef TEST
+
+  static int lastTime = millis();
+  if(lastTime + 20 < millis())
+  {
+    lastTime = millis();
+
+    frequency++;
+  }
+
+#else
   meetAndroid.receive();
+#endif
   
+
   // Transform input frequency into PID controllable input
   // (Transfer function)
   distance = pitchToDistance(goalFrequency, frequency);
@@ -97,7 +121,9 @@ void loop()
   // Probably latter? but why?? hmmm. Do some math to check.
   // 
 
+  //rotateMotor(255);
   
+
   if(!stopped)
   {
     // Compute dTheta/dt
@@ -106,11 +132,14 @@ void loop()
     // Convert pid_out to power
     power = angularVelocityToPower(pid_out);
 
-    rotateMotor(power);
+    //rotateMotor(255);
+    
+    myservo.write(map(power, 0, 255, 0, 180));
+    delay(15);
   }
   else
   {
-    rotateMotor(0); // Coast motors
+    // rotateMotor(0); // Coast motors
   }
 }
 

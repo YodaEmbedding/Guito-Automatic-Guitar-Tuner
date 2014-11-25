@@ -41,6 +41,14 @@ void receiveCommand(byte flag, byte numOfValues)
     // Tune next string
     break;
 
+  case 'D':
+    // Drop D
+    break;
+
+  case 'E':
+    // Eb
+    break;
+
   default:
     break;
   }

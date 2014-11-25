@@ -13,6 +13,7 @@ extern const int RADIUS;
 extern const int GEAR_RATIO;
 extern const double PWR_OVER_W;
 
+extern const int PIN_SERVO;
 extern const int PIN_ENABLE;
 extern const int PIN_LEFT;
 extern const int PIN_RIGHT;
