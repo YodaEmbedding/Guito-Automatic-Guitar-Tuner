@@ -9,9 +9,17 @@
 #include "Arduino.h"
 #include "Comm.h"
 #include "Motor.h"
+#include "Notes.h"
 
 
 // Called whenever a command is received over the Bluetooth connection
+// [flag], [command] for [...]
+// 'C',    'X'       for Emergency stop
+// 'C',    'P'       for Ping
+// 'C',    'N'       for Next string
+// 'C',    'S'       for Standard tuning
+// 'C',    'D'       for Drop D tuning
+// 'C',    'E'       for E flat tuning
 void receiveCommand(byte flag, byte numOfValues)
 {
   static char command[64] = {'\0'};
@@ -27,27 +35,43 @@ void receiveCommand(byte flag, byte numOfValues)
     // Emergency stop
     // Cut power to system (coast motors)
     rotateMotor(0);
+    stopped = true;
     break;
 
-  case 'S':
-    // Standard tuning
-    goalFrequency = 440;
-    stopped = false;
+  case 'P':
+    // Ping
+    meetAndroid.send("Ping received on " + millis());
     break;
 
   case 'N':
     // Tune next string
+    nextString();
+    stopped = false;
+    break;
+
+  case 'S':
+    // Standard tuning
+    setFlag(TUNING_STANDARD);
+    setString(0);
+    stopped = false;
     break;
 
   case 'D':
     // Drop D
+    setFlag(TUNING_DROPD);
+    setString(0);
+    stopped = false;
     break;
 
   case 'E':
-    // Eb
+    // E Flat
+    setFlag(TUNING_EFLAT);
+    setString(0);
+    stopped = false;
     break;
 
   default:
+    meetAndroid.send("Unrecognized command");
     break;
   }
 }

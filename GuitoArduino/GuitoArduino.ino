@@ -14,19 +14,20 @@
 
 
 #include "Arduino.h"
-#include <Servo.h>
-#include "Motor.h"
 #include "Notes.h"
 
-
-#ifdef ENABLE_PID
-#include <PID_v1.h>
+#ifdef ENABLE_SERVO
+  #include <Servo.h>
+  #include "Motor.h"
 #endif
 
+#ifdef ENABLE_PID
+  #include <PID_v1.h>
+#endif
 
 #ifdef ENABLE_BT
-#include <MeetAndroid.h>
-#include "Comm.h"
+  #include <MeetAndroid.h>
+  #include "Comm.h"
 #endif
 
 
@@ -34,38 +35,36 @@
 MeetAndroid meetAndroid;
 #endif
 
-
 // TORQUE = 38 oz-in torque @ 6 V
 const int RADIUS = 30;
 const int GEAR_RATIO = 1;
 // PWR / w  ~=  255 / (360 * rps)
 const double PWR_OVER_W = 255.0 / (360.0 * 0.25);
 
-
 // Motor
-/*
-DC Motor
-const int PIN_ENABLE = 11;
-const int PIN_LEFT = 10;
-const int PIN_RIGHT = 5;
-*/
 const int PIN_SERVO = 9;
-const int SERVO_MIN = 75;
-const int SERVO_MAX = 113;
+// Note that actual output commands are modulated
+// so that it's between [t-0.2ms, t+0.2ms] pulses + 20ms pulse
+// (When using PWM, not PPM)
+// This means that if write is using a 1/t relationship,
+// radius is not completely symmetrical
+// i.e., midpoint+10 may turn at a different speed than midpoint-10
+const int SERVO_RADIUS = 18;
 const int SERVO_MIDPOINT = 94;
+const int SERVO_MIN = SERVO_MIDPOINT - SERVO_RADIUS; // 76;
+const int SERVO_MAX = SERVO_MIDPOINT + SERVO_RADIUS; // 112;
 bool stopped = false;
+int power = 0;
 
 int frequency = 0;
-int goalFrequency = 440;
 int distance = 0;
-int power = 0;
 
 #ifdef ENABLE_PID
 // PID variables
 double pid_in = 0.0;
 double pid_out = 0.0;
 double pid_setpoint = 0.0;
-PID pid(&pid_in, &pid_out, &pid_setpoint, 1.0, 0.0, 0.0, DIRECT);
+PID pid(&pid_in, &pid_out, &pid_setpoint, 1.0, 0.2, 0.5, DIRECT);
 #endif
 
 
@@ -77,7 +76,6 @@ void setup()
   meetAndroid.registerFunction(receivePitch, 'A');
   meetAndroid.registerFunction(receiveCommand, 'C');
 #endif
-
 
 #ifdef USB_DEBUG
   Serial.begin(9600);
@@ -104,9 +102,8 @@ void setup()
 
 void loop()
 {
-  // Receive pitch from android device
 #ifdef TEST
-
+  // Generate fake values for frequency
   static int lastTime = millis();
   if(lastTime + 200 < millis())
   {
@@ -114,14 +111,13 @@ void loop()
 
     frequency += (goalFrequency - frequency) / 4;
   }
-
 #else
   #ifdef ENABLE_BT
+  // Receive pitch from android device
   meetAndroid.receive();
   #endif
 #endif
   
-
   // Transform input frequency into PID controllable input
   // (Transfer function)
   distance = pitchToDistance(goalFrequency, frequency);
@@ -130,7 +126,6 @@ void loop()
   // pid_error = pid_setpoint - pid_in
   pid_setpoint = distanceToDegrees(distance);
   pid_in = 0;
-
 
   // power   ~= velocity
   // degrees ~= distance
@@ -145,7 +140,6 @@ void loop()
   // Probably latter? but why?? hmmm. Do some math to check.
 #endif
 
-
   if(!stopped)
   {
 #ifdef ENABLE_PID
@@ -155,7 +149,6 @@ void loop()
     // Convert pid_out to power
     power = angularVelocityToPower(pid_out);
 #else
-
     if(frequency >= goalFrequency - 1 && frequency <= goalFrequency + 1)
     {
       power = 0;
@@ -164,12 +157,11 @@ void loop()
     {
       power = constrain((goalFrequency - frequency) * 10, -255, 255);
     }
-
 #endif
 
-
-
+#ifdef ENABLE_BT
     meetAndroid.send(power);
+#endif
     
 #ifdef ENABLE_SERVO
     rotateMotor(power);
@@ -177,8 +169,10 @@ void loop()
   }
   else
   {
+#ifdef ENABLE_SERVO
     rotateMotor(0);
-    // myservo.detach(); // Coast motors
+    // myservo.detach(); // Coast motors?
+#endif
   }
 }
 

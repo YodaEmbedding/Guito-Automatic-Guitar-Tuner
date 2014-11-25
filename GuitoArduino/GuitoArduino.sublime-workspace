@@ -35,7 +35,7 @@
 			"file": "GuitoArduino.ino",
 			"settings":
 			{
-				"buffer_size": 3045,
+				"buffer_size": 3729,
 				"line_ending": "Unix"
 			}
 		}
@@ -84,6 +84,8 @@
 	},
 	"expanded_folders":
 	[
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino",
+		"/c/program files (x86)/arduino/libraries/Servo/examples/Knob"
 	],
 	"file_history":
 	[
@@ -300,15 +302,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3045,
+						"buffer_size": 3729,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								373,
-								373
+								1368,
+								1368
 							]
 						],
 						"settings":
@@ -318,7 +320,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 170.0,
+						"translation.y": 2718.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,

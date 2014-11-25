@@ -3,17 +3,3 @@ Get conversion constants
 Distance Estimation algorithm
 Pitch tracker
 
-
-
-write( < 94 ) == CW (motor axle facing upwards)
-write( = 94 ) == stop
-write( > 94 ) == CCW
-
-
-for(int i = 75; i < 113; ++i)
-{
-	myservo.write(i);
-	Serial.println(i);
-	delay(300);
-}
-
