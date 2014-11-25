@@ -87,7 +87,7 @@ void loop()
   {
     lastTime = millis();
 
-    frequency++;
+    frequency += (goalFrequency - frequency) / 4;
   }
 
 #else
