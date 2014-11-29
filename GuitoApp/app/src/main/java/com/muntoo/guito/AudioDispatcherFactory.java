@@ -46,6 +46,10 @@ public class AudioDispatcherFactory {
 			TarsosDSPAudioInputStream audioStream = new AndroidAudioInputStream(audioInputStream, format);
 			//start recording ! Opens the stream.
 			audioInputStream.startRecording();
+
+			// [Mateen's edit] Wait for stream to become available
+			while(audioInputStream.getRecordingState() != AudioRecord.RECORDSTATE_RECORDING);
+
 			return new AudioDispatcher(audioStream,audioBufferSize,bufferOverlap);
 		}else{
 			new IllegalArgumentException("Buffer size too small should be at least " + (minAudioBufferSize *2));
