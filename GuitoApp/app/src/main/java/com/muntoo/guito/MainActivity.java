@@ -67,7 +67,7 @@ public class MainActivity extends Activity
 
 
 		// UI listeners
-		
+
 		btnTuneStandard.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
