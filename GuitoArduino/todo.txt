@@ -3,7 +3,7 @@ Get conversion constants
 	AXLE_RADIUS
 	RADIUS       // irrelevant?
 	PWR_OVER_W
-
+pitchToDistance() estimate
 Distance Estimation algorithm
 Pitch tracker
 

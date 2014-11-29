@@ -4,6 +4,26 @@
 		"selected_items":
 		[
 			[
+				"SERVO",
+				"SERVO_WRITEMS"
+			],
+			[
+				"flag",
+				"tuning_flag"
+			],
+			[
+				"string",
+				"currString"
+			],
+			[
+				"tuning",
+				"tuning_flag"
+			],
+			[
+				"ENAB",
+				"ENABLE_BT"
+			],
+			[
 				"String",
 				"stringLength"
 			],
@@ -27,7 +47,7 @@
 			"file": "todo.txt",
 			"settings":
 			{
-				"buffer_size": 266,
+				"buffer_size": 165,
 				"line_ending": "Windows"
 			}
 		},
@@ -35,8 +55,24 @@
 			"file": "GuitoArduino.ino",
 			"settings":
 			{
-				"buffer_size": 3729,
+				"buffer_size": 3982,
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Motor.cpp",
+			"settings":
+			{
+				"buffer_size": 1211,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "\n\n",
+			"settings":
+			{
+				"buffer_size": 2,
+				"line_ending": "Windows"
 			}
 		}
 	],
@@ -85,19 +121,22 @@
 	"expanded_folders":
 	[
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino",
-		"/c/program files (x86)/arduino/libraries/Servo/examples/Knob"
+		"/C/Program Files (x86)/Arduino/libraries/MeetAndroid"
 	],
 	"file_history":
 	[
-		"/c/program files (x86)/arduino/libraries/Servo/examples/Knob/Knob.ino",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Comm.h",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Notes.h",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Comm.cpp",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Motor.cpp",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Motor.h",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Comm.cpp",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Notes.cpp",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Notes.h",
+		"/arduino/hardware/tools/avr/avr/include/stdlib.h",
+		"/C/Program Files (x86)/Arduino/libraries/MeetAndroid/MeetAndroid.cpp",
+		"/C/Users/Mateen/Downloads/code_51565.txt",
+		"/c/program files (x86)/arduino/libraries/Servo/examples/Knob/Knob.ino",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Comm.h",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/pitch_detector_yin_src/src/ui/SimplePitchDetector.java",
 		"/C/Users/Mateen/Dropbox/random physics.txt",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Notes.cpp",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/todo.txt",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/libraries/README.txt",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/pitch_detector_yin_src/src/ui/Yin.java",
@@ -111,7 +150,6 @@
 		"/C/Users/Mateen/Documents/GitHub/Stylish-Google-Drive-Dark/generate-dev.pl",
 		"/C/Users/Mateen/Documents/GitHub/Stylish-Google-Drive-Dark/google-drive-dark-userstyles.css",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/AndroidFrequency.java",
-		"/C/Program Files (x86)/Arduino/libraries/MeetAndroid/MeetAndroid.cpp",
 		"/C/Users/Mateen/Desktop/MultiColorLamp.java",
 		"/C/Users/Mateen/AppData/Local/Temp/7zOFA84.tmp/SensorGraph.java",
 		"/C/Users/Mateen/AppData/Local/Temp/7zOE6DC.tmp/GraphView.java",
@@ -213,7 +251,7 @@
 	],
 	"find":
 	{
-		"height": 38.0
+		"height": 43.0
 	},
 	"find_in_files":
 	{
@@ -227,6 +265,9 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"\\?",
+			"?",
+			"startFlag",
 			"__COMM_H",
 			"isValidChar",
 			"A4",
@@ -245,9 +286,12 @@
 		"highlight": true,
 		"in_selection": false,
 		"preserve_case": true,
-		"regex": false,
+		"regex": true,
 		"replace_history":
 		[
+			"\\?\\n",
+			"\\n",
+			"\\?\\n",
 			"isValidNoteChar",
 			"delete",
 			"LIFE gameboard",
@@ -265,7 +309,7 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 3,
 			"sheets":
 			[
 				{
@@ -274,15 +318,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 266,
+						"buffer_size": 165,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								160,
-								160
+								119,
+								119
 							]
 						],
 						"settings":
@@ -293,7 +337,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
@@ -302,15 +346,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3729,
+						"buffer_size": 3982,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1368,
-								1368
+								785,
+								785
 							]
 						],
 						"settings":
@@ -320,7 +364,65 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2718.0,
+						"translation.y": 2725.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "Motor.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1211,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								449,
+								449
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 229.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -680,6 +782,122 @@
 	{
 		"height": 172.0
 	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416939959.8087":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416939996.160558":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416940018.089156":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416940040.027761":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416940066.098306":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416940113.362926":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416940253.543637":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416940270.106419":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416940300.080739":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416940312.63567":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416940345.676174":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416940418.241789":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416940503.913731":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416942435.662736":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416943463.407783":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416943507.040819":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416943537.773681":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416943726.126657":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416943850.122857":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416943927.210691":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416943992.21593":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416944013.136811":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416944021.916056":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416944224.807375":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416944955.230934":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416947204.514877":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416947239.051443":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416947252.338895":
+	{
+		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416947372.297223":
+	{
+		"height": 172.0
+	},
 	"output.build|c:\\program files (x86)\\arduino\\libraries\\Servo\\examples\\Knob|1416934549.681948":
 	{
 		"height": 172.0
@@ -807,7 +1025,7 @@
 	"project": "GuitoArduino.sublime-project",
 	"replace":
 	{
-		"height": 70.0
+		"height": 80.0
 	},
 	"save_all_on_build": true,
 	"select_file":

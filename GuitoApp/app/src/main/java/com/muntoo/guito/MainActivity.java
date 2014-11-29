@@ -15,6 +15,15 @@ import android.widget.TextView;
 import at.abraxas.amarino.Amarino;
 import at.abraxas.amarino.AmarinoIntent;
 
+//import be.tarsos.dsp.*;
+import be.tarsos.dsp.AudioDispatcher;
+import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.io.android.AudioDispatcherFactory;
+import be.tarsos.dsp.pitch.PitchDetectionHandler;
+import be.tarsos.dsp.pitch.PitchDetectionResult;
+import be.tarsos.dsp.pitch.PitchProcessor;
+import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
+
 
 public class MainActivity extends Activity
 {
@@ -23,7 +32,9 @@ public class MainActivity extends Activity
 	private ArduinoReceiver arduinoReceiver = new ArduinoReceiver();
 	private Context context = this; // getApplicationContext();
 	// private recorderThread audioThread = new recorderThread();
-	private MicrophoneThread audioThread = new MicrophoneThread();
+	// private MicrophoneThread audioThread = new MicrophoneThread();
+	// private Thread pitch_detector_thread_ = null;
+
 
 
 	@Override
@@ -36,16 +47,44 @@ public class MainActivity extends Activity
 		final TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
 		Button btnTuneStandard = (Button) findViewById(R.id.btnTuneStandard);
 
-		audioThread.start();
+		// audioThread.start();
 		// microphoneThread.start();
+
+
+
+
+		AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
+
+
+		dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.FFT_YIN, 22050, 1024, new PitchDetectionHandler() {
+
+			@Override
+			public void handlePitch(PitchDetectionResult pitchDetectionResult,
+			                        AudioEvent audioEvent) {
+				final float pitchInHz = pitchDetectionResult.getPitch();
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
+						numCurrentPitch.setText(pitchInHz + "");
+						//TextView text = (TextView) findViewById(R.id.textView1);
+						//text.setText("" + pitchInHz);
+					}
+				});
+
+			}
+		}));
+
+
+		new Thread(dispatcher,"Audio Dispatcher").start();
+
 
 		btnTuneStandard.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
 			{
-				numCurrentPitch.setText(audioThread.frequency + "");
-                // numCurrentPitch.setText(microphoneThread.frequency + "");
-                Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'A', audioThread.frequency);
+				//numCurrentPitch.setText(audioThread.frequency + "");
+                //Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'A', audioThread.frequency);
 			}
 		});
 	}
@@ -59,6 +98,10 @@ public class MainActivity extends Activity
 
 		// this is how you tell Amarino to connect to a specific BT device from within your own code
 		Amarino.connect(context, DEVICE_ADDRESS);
+
+
+		//pitch_detector_thread_ = new Thread(new PitchDetector(this, new Handler()));
+		//pitch_detector_thread_.start();
 	}
 
 	@Override
