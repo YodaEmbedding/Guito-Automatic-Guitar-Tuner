@@ -32,10 +32,6 @@ public class MainActivity extends Activity
 	private static final String DEVICE_ADDRESS = "98:D3:31:60:05:C7"; // change this to your Bluetooth device address
 	private ArduinoReceiver arduinoReceiver = new ArduinoReceiver();
 	private Context context = this; // getApplicationContext();
-	// private recorderThread audioThread = new recorderThread();
-	// private MicrophoneThread audioThread = new MicrophoneThread();
-	// private Thread pitch_detector_thread_ = null;
-
 
 
 	@Override
@@ -48,11 +44,7 @@ public class MainActivity extends Activity
 		final TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
 		Button btnTuneStandard = (Button) findViewById(R.id.btnTuneStandard);
 
-		// audioThread.start();
-		// microphoneThread.start();
-
-
-
+		// Set up pitch tracker
 		AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
 
 		PitchDetectionHandler pdh = new PitchDetectionHandler() {
@@ -69,44 +61,13 @@ public class MainActivity extends Activity
 			}
 		};
 
-
 		AudioProcessor p = new PitchProcessor(PitchEstimationAlgorithm.FFT_YIN, 22050, 1024, pdh);
 		dispatcher.addAudioProcessor(p);
 		new Thread(dispatcher,"Audio Dispatcher").start();
 
 
-
-		/*
-
-		AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
-
-
-		dispatcher.addAudioProcessor(new PitchProcessor(PitchEstimationAlgorithm.FFT_YIN, 22050, 1024, new PitchDetectionHandler() {
-
-			@Override
-			public void handlePitch(PitchDetectionResult pitchDetectionResult,
-			                        AudioEvent audioEvent) {
-				final float pitchInHz = pitchDetectionResult.getPitch();
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
-						numCurrentPitch.setText(pitchInHz + "");
-						//TextView text = (TextView) findViewById(R.id.textView1);
-						//text.setText("" + pitchInHz);
-					}
-				});
-
-			}
-		}));
-
-
-		new Thread(dispatcher,"Audio Dispatcher").start();
-
-*/
-
-
-
+		// UI listeners
+		
 		btnTuneStandard.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
