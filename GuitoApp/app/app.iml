@@ -84,8 +84,6 @@
     <orderEntry type="library" exported="" name="android-support-v4" level="project" />
     <orderEntry type="library" exported="" name="AmarinoLibrary_v0_55" level="project" />
     <orderEntry type="library" exported="" name="TarsosDSP-Android-2.0-bin" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-21.0.2" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-21.0.2" level="project" />
   </component>
 </module>
 

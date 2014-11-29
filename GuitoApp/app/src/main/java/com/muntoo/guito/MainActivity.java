@@ -18,6 +18,7 @@ import at.abraxas.amarino.AmarinoIntent;
 //import be.tarsos.dsp.*;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
+import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.pitch.PitchDetectionHandler;
 import be.tarsos.dsp.pitch.PitchDetectionResult;
@@ -52,6 +53,30 @@ public class MainActivity extends Activity
 
 
 
+		AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
+
+		PitchDetectionHandler pdh = new PitchDetectionHandler() {
+			@Override
+			public void handlePitch(PitchDetectionResult result,AudioEvent e) {
+				final float pitchInHz = result.getPitch();
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						TextView text = (TextView) findViewById(R.id.numCurrentPitch);
+						text.setText("" + pitchInHz);
+					}
+				});
+			}
+		};
+
+
+		AudioProcessor p = new PitchProcessor(PitchEstimationAlgorithm.FFT_YIN, 22050, 1024, pdh);
+		dispatcher.addAudioProcessor(p);
+		new Thread(dispatcher,"Audio Dispatcher").start();
+
+
+
+		/*
 
 		AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
 
@@ -77,6 +102,9 @@ public class MainActivity extends Activity
 
 
 		new Thread(dispatcher,"Audio Dispatcher").start();
+
+*/
+
 
 
 		btnTuneStandard.setOnClickListener(new View.OnClickListener()
