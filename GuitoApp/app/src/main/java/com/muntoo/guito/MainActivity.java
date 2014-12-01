@@ -12,6 +12,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.Date;
+import java.util.Timer;
+
 import at.abraxas.amarino.Amarino;
 import at.abraxas.amarino.AmarinoIntent;
 
@@ -33,6 +40,21 @@ public class MainActivity extends Activity
 	private ArduinoReceiver arduinoReceiver = new ArduinoReceiver();
 	private Context context = this; // getApplicationContext();
 	private Thread pitchThread = null;
+	private double pitchInHz = -1.0;
+	private MovingAverage avgPitch = new MovingAverage();
+	private ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
+	// private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+	String[] tuning_notes = {
+		// <Concert pitch>, <Notes from top/thickest to bottom/thinnest string>
+		"440, E2 A2 D3 G3 B3 E4", // Standard Tuning
+		"440, D2 A2 D3 G3 B3 E4", // Drop D
+		"440, Eb2 Ab2 Db3 Gb3 Bb3 Eb4" // E flat (Standard, half-step down)
+	};
+
+	private int TUNING_STANDARD = 0;
+	private int TUNING_DROPD = 1;
+	private int TUNING_EFLAT = 2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -40,20 +62,82 @@ public class MainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		// get handles to Views defined in our layout file
+		// get handles to Views and Buttons defined in our layout file
 		final TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
 		Button btnTuneStandard = (Button) findViewById(R.id.btnTuneStandard);
+		Button btnTuneDropD = (Button) findViewById(R.id.btnTuneDropD);
+		Button btnTuneEFlat = (Button) findViewById(R.id.btnTuneEFlat);
+		Button btnTuneNextString = (Button) findViewById(R.id.btnNextString);
+		Button btnTuneStop = (Button) findViewById(R.id.btnStop);
 
 		// UI listeners
-
 		btnTuneStandard.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
 			{
-				//numCurrentPitch.setText(audioThread.frequency + "");
-                //Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'A', audioThread.frequency);
+				TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
+				numCurrentPitch.setText("" + (int) avgPitch.getAverage());
+				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_STANDARD]);
 			}
 		});
+
+		btnTuneDropD.setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View v)
+			{
+				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_DROPD]);
+			}
+		});
+
+		btnTuneEFlat.setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View v)
+			{
+				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_EFLAT]);
+			}
+		});
+
+		btnTuneNextString.setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View v)
+			{
+				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'N', "");
+			}
+		});
+
+		btnTuneStop.setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View v)
+			{
+				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'X', "");
+			}
+		});
+
+		// Bluetooth thread
+		Runnable sendPitchTask = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
+				numCurrentPitch.setText("" + (int) avgPitch.getAverage());
+
+				Amarino.sendDataToArduino(context,  DEVICE_ADDRESS, 'C', (int)avgPitch.getAverage());
+			}
+		};
+
+		Runnable getPitchTask = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				// pitchInHz = result.getPitch();
+				avgPitch.push(pitchInHz);
+			}
+		};
+
+		executor.scheduleAtFixedRate(sendPitchTask, 1000, 100, TimeUnit.MILLISECONDS);
+		executor.scheduleAtFixedRate(getPitchTask, 1000, 100/8, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
@@ -67,16 +151,7 @@ public class MainActivity extends Activity
 		PitchDetectionHandler pdh = new PitchDetectionHandler() {
 			@Override
 			public void handlePitch(PitchDetectionResult result, AudioEvent e) {
-				final float pitchInHz = result.getPitch();
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						TextView text = (TextView) findViewById(R.id.numCurrentPitch);
-						text.setText("" + pitchInHz);
-
-						Amarino.sendDataToArduino(context,  DEVICE_ADDRESS, 'P', pitchInHz);
-					}
-				});
+				pitchInHz = result.getPitch();
 			}
 		};
 
@@ -151,7 +226,7 @@ public class MainActivity extends Activity
 
 				if (data != null)
 				{
-					TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
+					// TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
                     // numCurrentPitch.setText(data);
 				}
 			}
