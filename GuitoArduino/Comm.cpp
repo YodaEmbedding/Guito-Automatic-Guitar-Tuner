@@ -24,7 +24,7 @@ void receiveCommand(byte flag, byte numOfValues)
 {
   static char command[64] = {'\0'}; // Actual max size is 63, but just in case...
   meetAndroid.getString(command);
-  // meetAndroid.getIntValues(intBuffer);
+  String szCommand = command;
 
   switch(flag)
   {
@@ -42,6 +42,11 @@ void receiveCommand(byte flag, byte numOfValues)
   case 'P':
     // Ping
     meetAndroid.send("Ping received on " + millis());
+    break;
+
+  case 'C':
+    // Receive current pitch tracker information
+    frequency = szCommand.toInt();
     break;
 
   case 'N':

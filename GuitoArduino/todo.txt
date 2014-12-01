@@ -5,5 +5,4 @@ Get conversion constants
 	PWR_OVER_W
 pitchToDistance() estimate
 Distance Estimation algorithm
-Pitch tracker
 
