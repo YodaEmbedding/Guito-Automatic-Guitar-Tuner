@@ -92,9 +92,6 @@ void setup()
   Serial.begin(9600);
 #endif
 
-  // Construct tables
-  InitializeTuningTable();
-
 #ifdef ENABLE_PID
   // Set up PID controller
   pid.SetOutputLimits(-255.0, 255.0);

@@ -9,44 +9,27 @@
 #include "Notes.h"
 
 
-String tuning_notes[TUNING_COUNT] = {
-  // <Tuning Name>, <Notes from top/thickest to bottom/thinnest string>
-  "S, E2 A2 D3 G3 B3 E4", // Standard Tuning
-  "D, D2 A2 D3 G3 B3 E4", // Drop D
-  "E, Eb2 Ab2 Db3 Gb3 Bb3 Eb4" // E flat (Standard, half-step down)
-};
+Tuning currTuning[STRING_COUNT];
 
-Tuning tuning_table[TUNING_COUNT][STRING_COUNT];
-
-int tuning_flag = TUNING_COUNT;
+int concertPitch = 440;
 int currString = 0;
 int goalFrequency = 440;
 
 
 // Get frequency from table
-inline int getFrequency(int i, int flag)
+inline int getFrequency(int i)
 {
-  if((flag >= TUNING_COUNT) || (flag < 0))
-      return(0);
-
-  if((i >= 6) || (i < 0))
-    return(0);
+  if((i >= STRING_COUNT) || (i < 0))
+    return(-1);
   
-  return(tuning_table[flag][i].pitch);
+  return(currTuning[i].pitch);
 }
 
 
 // Get current string frequency
 inline int getCurrFrequency()
 {
-  return(getFrequency(currString, tuning_flag));
-}
-
-
-// Set tuning flag
-void setFlag(int flag)
-{
-  tuning_flag = flag;
+  return(getFrequency(currString));
 }
 
 
@@ -142,51 +125,53 @@ int stepsFromA4(String s)
 }
 
 
-// Initializes tuning table
-void InitializeTuningTable()
+// Converts s into t
+// Accepts s of format:
+// <Concert Pitch>, <Notes>
+// Example:
+// s = "440, E2 A2 D3 G3 B3 E4"
+void parseNoteString(Tuning t[], String s) 
 {
-  // Initialize all tunings
-  for(int i = 0; i < TUNING_COUNT; ++i)
+  int j = 0; // position in string
+  int k = 0; // guitar string #
+
+  int len = s.length();
+
+  String note = "";
+
+  // Get A4
+  for(; j < len; ++j)
   {
-    int j = 0; // position in string
-    int k = 0; // array index in table (guitar string #)
-
-    String s = tuning_notes[i];
-    int len = s.length();
-
-    String note = "";
-
-    // Skip tuning name
-    for(; j < len; ++j)
+    if(s[j] == ',')
     {
-      if(s[j] == ',')
-      {
-        ++j;
-        break;
-      }
+      ++j;
+      break;
     }
 
-    // Parse string
-    for(; j < len;)
+    note = note + s[j];
+  }
+
+  concertPitch = note.toInt();
+
+  // Parse string
+  for(; j < len;)
+  {
+    if(!isValidNoteChar(s[j]))
     {
-      if(!isValidNoteChar(s[j]))
-      {
-        ++j;
-        continue;
-      }
-
-      // Get note
-      for(; isValidNoteChar(s[j]); ++j)
-      {
-        note = note + s[j];
-      }
-
-      tuning_table[i][k].pitch = NOTE_A4 + pow(TWELFTH_ROOT_OF_TWO, stepsFromA4(note));
-      ++k;
-
-      // T (Tension) = (UW x (2 x L x F)2) / 386.4
-      // tuning_table[i].tension = ????? WTFF?????;
+      ++j;
+      continue;
     }
+
+    // Get note
+    for(note = ""; isValidNoteChar(s[j]); ++j)
+    {
+      note = note + s[j];
+    }
+
+    t[k].pitch = concertPitch + pow(TWELFTH_ROOT_OF_TWO, stepsFromA4(note));
+    ++k;
+
+    // T (Tension) = (UW x (2 x L x F)2) / 386.4
+    // t[k].tension = ????? WTFF?????;
   }
 }
-

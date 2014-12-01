@@ -22,10 +22,11 @@
 // 'C',    'E'       for E flat tuning
 void receiveCommand(byte flag, byte numOfValues)
 {
-  static char command[64] = {'\0'};
+  static char command[64] = {'\0'}; // Actual max size is 63, but just in case...
   meetAndroid.getString(command);
+  // meetAndroid.getIntValues(intBuffer);
 
-  switch(command[0])
+  switch(flag)
   {
   case 0:
     // null
@@ -49,29 +50,19 @@ void receiveCommand(byte flag, byte numOfValues)
     stopped = false;
     break;
 
-  case 'S':
-    // Standard tuning
-    setFlag(TUNING_STANDARD);
-    setString(0);
-    stopped = false;
+  case 'F':
+    // Int buffer
     break;
 
-  case 'D':
-    // Drop D
-    setFlag(TUNING_DROPD);
-    setString(0);
-    stopped = false;
-    break;
-
-  case 'E':
-    // E Flat
-    setFlag(TUNING_EFLAT);
+  case 'T':
+    // Get tuning information
+    parseNoteString(currTuning, command);
     setString(0);
     stopped = false;
     break;
 
   default:
-    meetAndroid.send("Unrecognized command");
+    meetAndroid.send("Unrecognized flag");
     break;
   }
 }
