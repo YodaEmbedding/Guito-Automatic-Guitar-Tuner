@@ -32,7 +32,7 @@ public class MainActivity extends Activity
 	private static final String DEVICE_ADDRESS = "98:D3:31:60:05:C7"; // change this to your Bluetooth device address
 	private ArduinoReceiver arduinoReceiver = new ArduinoReceiver();
 	private Context context = this; // getApplicationContext();
-
+	private Thread pitchThread = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -43,28 +43,6 @@ public class MainActivity extends Activity
 		// get handles to Views defined in our layout file
 		final TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
 		Button btnTuneStandard = (Button) findViewById(R.id.btnTuneStandard);
-
-		// Set up pitch tracker
-		AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
-
-		PitchDetectionHandler pdh = new PitchDetectionHandler() {
-			@Override
-			public void handlePitch(PitchDetectionResult result,AudioEvent e) {
-				final float pitchInHz = result.getPitch();
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						TextView text = (TextView) findViewById(R.id.numCurrentPitch);
-						text.setText("" + pitchInHz);
-					}
-				});
-			}
-		};
-
-		AudioProcessor p = new PitchProcessor(PitchEstimationAlgorithm.FFT_YIN, 22050, 1024, pdh);
-		dispatcher.addAudioProcessor(p);
-		new Thread(dispatcher,"Audio Dispatcher").start();
-
 
 		// UI listeners
 
@@ -82,26 +60,64 @@ public class MainActivity extends Activity
 	protected void onStart()
 	{
 		super.onStart();
+
+		// Set up pitch tracker
+		AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
+
+		PitchDetectionHandler pdh = new PitchDetectionHandler() {
+			@Override
+			public void handlePitch(PitchDetectionResult result, AudioEvent e) {
+				final float pitchInHz = result.getPitch();
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						TextView text = (TextView) findViewById(R.id.numCurrentPitch);
+						text.setText("" + pitchInHz);
+
+						Amarino.sendDataToArduino(context,  DEVICE_ADDRESS, 'P', pitchInHz);
+					}
+				});
+			}
+		};
+
+		AudioProcessor p = new PitchProcessor(PitchEstimationAlgorithm.FFT_YIN, 22050, 1024, pdh);
+		dispatcher.addAudioProcessor(p);
+
+		pitchThread = new Thread(dispatcher, "Audio Dispatcher");
+		pitchThread.setPriority(Thread.NORM_PRIORITY);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		pitchThread.start();
+
 		// in order to receive broadcasted intents we need to register our receiver
 		registerReceiver(arduinoReceiver, new IntentFilter(AmarinoIntent.ACTION_RECEIVED));
 
 		// this is how you tell Amarino to connect to a specific BT device from within your own code
 		Amarino.connect(context, DEVICE_ADDRESS);
-
-
-		//pitch_detector_thread_ = new Thread(new PitchDetector(this, new Handler()));
-		//pitch_detector_thread_.start();
 	}
 
 	@Override
-	protected void onStop() {
-		super.onStop();
+	protected void onPause() {
+		super.onPause();
+
+		pitchThread.interrupt();
 
 		// if you connect in onStart() you must not forget to disconnect when your app is closed
 		Amarino.disconnect(context, DEVICE_ADDRESS);
 
 		// do never forget to unregister a registered receiver
 		unregisterReceiver(arduinoReceiver);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+
+
 	}
 
 
