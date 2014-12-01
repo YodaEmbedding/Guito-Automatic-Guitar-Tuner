@@ -84,8 +84,12 @@ void setup()
 #ifdef ENABLE_BT
   // Turn on Bluetooth communication at 9600 baud rate
   Serial.begin(9600);
-  meetAndroid.registerFunction(receivePitch, 'A');
-  meetAndroid.registerFunction(receiveCommand, 'C');
+  meetAndroid.registerFunction(receivePitch, 'C');
+  meetAndroid.registerFunction(receiveCommand, 'X');
+  meetAndroid.registerFunction(receiveCommand, 'T');
+  meetAndroid.registerFunction(receiveCommand, 'F');
+  meetAndroid.registerFunction(receiveCommand, 'N');
+  meetAndroid.registerFunction(receiveCommand, 'P');
 #endif
 
 #ifdef USB_DEBUG

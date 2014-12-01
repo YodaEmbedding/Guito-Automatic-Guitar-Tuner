@@ -26,6 +26,11 @@ void receiveCommand(byte flag, byte numOfValues)
   meetAndroid.getString(command);
   String szCommand = command;
 
+#ifdef USB_DEBUG
+    Serial.println("flag");
+    Serial.println(szCommand);
+#endif
+
   switch(flag)
   {
   case 0:
