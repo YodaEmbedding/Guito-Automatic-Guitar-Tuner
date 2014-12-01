@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -119,10 +120,14 @@ public class MainActivity extends Activity
 			@Override
 			public void run()
 			{
+				Log.e(TAG, "sendPitchTask() start");
+
 				TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
 				numCurrentPitch.setText("" + (int) avgPitch.getAverage());
 
 				Amarino.sendDataToArduino(context,  DEVICE_ADDRESS, 'C', (int)avgPitch.getAverage());
+
+				Log.e(TAG, "sendPitchTask() end");
 			}
 		};
 
@@ -133,11 +138,12 @@ public class MainActivity extends Activity
 			{
 				// pitchInHz = result.getPitch();
 				avgPitch.push(pitchInHz);
+				Log.e(TAG, "getPitchTask()");
 			}
 		};
 
 		executor.scheduleAtFixedRate(sendPitchTask, 1000, 100, TimeUnit.MILLISECONDS);
-		executor.scheduleAtFixedRate(getPitchTask, 1000, 100/8, TimeUnit.MILLISECONDS);
+		executor.scheduleAtFixedRate(getPitchTask, 1000, 100 / 8, TimeUnit.MILLISECONDS);
 	}
 
 	@Override

@@ -7,6 +7,7 @@
 // License:     GPLv3
 
 
+// #define USB_DEBUG
 // #define TEST
 #define ENABLE_BT
 // #define ENABLE_PID
@@ -17,10 +18,10 @@
 #include "Arduino.h"
 #include "Notes.h"
 
-#ifdef ENABLE_SERVO
+// #ifdef ENABLE_SERVO
   #include <Servo.h>
   #include "Motor.h"
-#endif
+// #endif
 
 #ifdef ENABLE_PID
   #include <PID_v1.h>
@@ -130,9 +131,11 @@ void loop()
   #endif
 #endif
   
+#ifdef ENABLE_SERVO
   // Transform input frequency into PID controllable input
   // (Transfer function)
   distance = pitchToDistance(goalFrequency, frequency);
+#endif
 
 #ifdef ENABLE_PID
   // pid_error = pid_setpoint - pid_in
