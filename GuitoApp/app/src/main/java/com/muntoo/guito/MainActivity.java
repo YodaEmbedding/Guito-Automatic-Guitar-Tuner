@@ -5,12 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.lang.reflect.Array;
@@ -33,6 +36,8 @@ import be.tarsos.dsp.pitch.PitchDetectionResult;
 import be.tarsos.dsp.pitch.PitchProcessor;
 import be.tarsos.dsp.pitch.PitchProcessor.PitchEstimationAlgorithm;
 
+import com.jjoe64.graphview.*;
+
 
 public class MainActivity extends Activity
 {
@@ -42,12 +47,14 @@ public class MainActivity extends Activity
 	private Context context = this; // getApplicationContext();
 	private Thread pitchThread = null;
 	private double pitchInHz = -1.0;
-	private int filteredHz = -1;
+	private Integer filteredHz = -1;
 	private MovingAverage avgPitch = new MovingAverage();
 	private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledExecutorService executor2 = Executors.newSingleThreadScheduledExecutor();
+	GraphView.GraphViewData[] gvPitch = null;
 
 	public int counter = 0;
+	public int counterGraph = 0;
 
 	String[] tuning_notes = {
 			// <Concert pitch>, <Notes from top/thickest to bottom/thinnest string>
@@ -158,19 +165,60 @@ public class MainActivity extends Activity
 
 					filteredHz = (int) avgPitch.getAverage();
 
-					Log.d(TAG, "raw: " + (int) (pitchInHz) + ", avg: " + filteredHz);
+					Log.d(TAG, "raw: " + (int) (pitchInHz) + ", avg: " + filteredHz.toString());
 
-
-					// TextView twCurrPitch = (TextView) (findViewById(R.id.twCurrPitch));
-					// twCurrPitch.setText("Current Pitch: " + pitchInHz);
-
+					// UI code will only run on UI Thread!!
+					// WTF ANDROID?? Y U DO DIS??
+					// TOOK ME 2 HOURS TO FIGURE OUT SRSLY
+					runOnUiThread(new Runnable(){
+						public void run(){
+							TextView twCurrPitch = (TextView)findViewById(R.id.twCurrPitch);
+							CharSequence cs = "Current Pitch: " + filteredHz.toString();
+							twCurrPitch.setText(cs);
+						}
+					});
 
 					Amarino.sendDataToArduino(context,  DEVICE_ADDRESS, 'C', "" + filteredHz);
 
 					//Log.e(TAG, "sendPitchTask() end");
 				}
 
+				if(counterGraph >= 80)
+				{
+					counterGraph = 0;
+
+					final GraphView graphView = new LineGraphView(context, "Pitch vs Time");
+
+					int num = 150;
+					GraphView.GraphViewData[] data = new GraphView.GraphViewData[num];
+					double v=0;
+					for (int i=0; i<num; i++) {
+						v += 0.2;
+						data[i] = new GraphView.GraphViewData(i, Math.sin(v));
+					}
+
+					GraphViewSeries seriesAvg = new GraphViewSeries("Sinus curve", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(200, 50, 00), 3), data);
+
+					graphView.addSeries(seriesAvg);
+					//graphView.addSeries(seriesFiltered);
+					//graphView.addSeries(seriesPitch);
+// optional - set view port, start=2, size=10
+					graphView.setViewPort(0, 10.0);
+					graphView.setManualYAxisBounds(50.0, 0.0);
+
+
+					runOnUiThread(new Runnable()
+					{
+						public void run()
+						{
+							LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
+							layout.addView(graphView);
+						}
+					});
+				}
+
 				++counter;
+				++counterGraph;
 			}
 		};
 
@@ -275,6 +323,9 @@ public class MainActivity extends Activity
 
 					// TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
                     // numCurrentPitch.setText(data);
+
+					// ProgressBar progressBar = (ProgressBar)(findViewById(R.id.progressBar));
+					// progressBar.setProgress(100 * (filteredHz - 440) + 50);
 				}
 			}
 		}

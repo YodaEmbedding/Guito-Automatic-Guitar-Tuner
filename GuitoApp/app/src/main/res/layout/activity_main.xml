@@ -10,6 +10,20 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/layout"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
+        android:minHeight="100dip"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="false"
+        android:layout_above="@+id/tunings">
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/tunings"
         android:layout_above="@+id/status"
         android:layout_alignParentRight="true"
@@ -85,7 +99,11 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/progressBar"/>
+            android:id="@+id/progressBar"
+            android:minHeight="20dip"
+            android:maxHeight="40dip"
+            android:progressDrawable="@android:drawable/progress_horizontal"
+            android:progress="50"/>
 
     </LinearLayout>
 
