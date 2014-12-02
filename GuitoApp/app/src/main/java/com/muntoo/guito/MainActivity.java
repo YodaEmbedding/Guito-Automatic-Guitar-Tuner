@@ -6,8 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -191,16 +195,40 @@ public class MainActivity extends Activity
 					runOnUiThread(new Runnable(){
 						public void run(){
 							TextView twCurrPitch = (TextView)findViewById(R.id.twCurrPitch);
+							LinearLayout info = (LinearLayout)findViewById(R.id.info);
 							ProgressBar progressBar = (ProgressBar) (findViewById(R.id.progressBar));
 
 							twCurrPitch.setText("Current Pitch: " +
 									"Raw: " + (int)pitchInHz +
 									", Avg: " +  filteredHz.toString());
 
+							info.setBackgroundColor(getProgressColor(0x60));
+
+							// define new drawable/colour
+							final float[] roundedCorners = new float[]
+									{ 5, 5, 5, 5, 5, 5, 5, 5 };
+							ShapeDrawable shape = new ShapeDrawable(new RoundRectShape(
+									roundedCorners, null, null));
+							shape.getPaint().setColor(getProgressColor());
+							ClipDrawable clip = new ClipDrawable(shape, Gravity.LEFT,
+									ClipDrawable.HORIZONTAL);
+							progressBar.setProgressDrawable(clip);
+
+							progressBar.setBackground(getResources().getDrawable(
+									android.R.drawable.progress_horizontal));
+
+							progressBar.setProgress(0);
+
 							if(filteredHz == -1)
+							{
 								progressBar.setProgress(50);
+							}
 							else
+							{
 								progressBar.setProgress(50 * (filteredHz - getGoalFrequency()) / getGoalFrequency() + 50);
+							}
+
+							progressBar.invalidate();
 						}
 					});
 
@@ -313,7 +341,6 @@ public class MainActivity extends Activity
 	}
 
 
-
 	/**
 	 * ArduinoReceiver is responsible for catching broadcasted Amarino
 	 * events.
@@ -378,5 +405,35 @@ public class MainActivity extends Activity
 	public int getGoalFrequency()
 	{
 		return tuning_ipitches[currTuning][currString];
+	}
+
+	private double contain(double x, double min, double max)
+	{
+		return x < min ? min : (x > max ? max : x);
+	}
+
+	private int getProgressColor(int alpha)
+	{
+		double error = 1.0 * Math.abs(filteredHz - getGoalFrequency()) / getGoalFrequency();
+		// Equation of circle. Properties:
+		// If error is small, dColor/derror = high
+		// If error is large, dColor/derror = small
+		double red = contain(255.0 * Math.sqrt(1.0 - Math.pow(1.0 - error, 2.0)), 0.0, 255.0);
+		double green = 255.0 - red;
+		double blue = 0.0;
+
+		if(filteredHz == -1)
+		{
+			red = 0.0;
+			green = 0.0;
+			blue = 128.0;
+		}
+
+		return Color.argb(alpha, (int)red, (int)green, (int)blue);
+	}
+
+	private int getProgressColor()
+	{
+		return getProgressColor(0xFF);
 	}
 }
