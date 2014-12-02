@@ -55,7 +55,6 @@ public class MainActivity extends Activity
 	private MovingAverage avgPitch = new MovingAverage();
 	// private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledExecutorService executor2 = Executors.newSingleThreadScheduledExecutor();
-	GraphView.GraphViewData[] gvPitch = null;
 	private int GRAPH_POINTS = 80;
 
 	public int counter = 0;
@@ -237,7 +236,7 @@ public class MainActivity extends Activity
 					//Log.e(TAG, "sendPitchTask() end");
 				}
 
-				if(counterGraph >= 80)
+				if(counterGraph >= GRAPH_POINTS)
 				{
 					counterGraph = 0;
 
@@ -246,17 +245,20 @@ public class MainActivity extends Activity
 					GraphView.GraphViewData[] data = new GraphView.GraphViewData[GRAPH_POINTS];
 
 					for (int i = 0; i < GRAPH_POINTS; i++) {
-						data[i] = new GraphView.GraphViewData(1.0 * i / GRAPH_POINTS, getGoalFrequency() + 10 * Math.sin(i));
+						data[i] = new GraphView.GraphViewData(1.0 * i / GRAPH_POINTS, avgPitch.store[i]);
 					}
 
-					GraphViewSeries seriesAvg = new GraphViewSeries("Avg", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(200, 50, 00), 3), data);
+					GraphViewSeries seriesRaw = new GraphViewSeries("Raw", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(200, 50, 00), 3), data);
 
-					graphView.addSeries(seriesAvg);
+					// Not static... graphView.removeAllSeries();
+					graphView.addSeries(seriesRaw);
+					//graphView.addSeries(seriesAvg);
 					//graphView.addSeries(seriesFiltered);
 					//graphView.addSeries(seriesPitch);
 
 					graphView.setViewPort(0.0, 1.0);
-					graphView.setManualYAxisBounds(getGoalFrequency() + 50.0, getGoalFrequency() - 50.0);
+					graphView.setManualYAxisBounds(getGoalFrequency() + 30.0, getGoalFrequency() - 30.0);
+					graphView.getGraphViewStyle().setNumVerticalLabels(3);
 					// graphView.setScaleY(0.2f);
 
 					runOnUiThread(new Runnable()
@@ -264,6 +266,7 @@ public class MainActivity extends Activity
 						public void run()
 						{
 							LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
+							layout.removeAllViews();
 							layout.addView(graphView);
 						}
 					});

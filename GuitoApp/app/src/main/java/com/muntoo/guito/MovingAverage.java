@@ -11,8 +11,14 @@ import java.util.Iterator;
 public class MovingAverage
 {
 	private int SIZE_MAX = 16;
+	private int STORE_MAX = 80;
+
 	private Queue<Integer> queue = new LinkedList<Integer>();
 	private Object[] sorted;
+
+	public Integer[] store = new Integer[80];
+	private int storeCount = 0;
+
 	private Integer average;
 	private boolean resetflag = true;
 
@@ -20,7 +26,6 @@ public class MovingAverage
 	{
 		if(resetflag == true)
 		{
-			// calculateMean();
 			calculateMedian();
 		}
 
@@ -35,8 +40,12 @@ public class MovingAverage
 		}
 
 		queue.add(t);
+		store[storeCount] = t;
 
-		// average = t;
+		if((++storeCount) >= STORE_MAX)
+		{
+			storeCount = 0;
+		}
 
 		resetflag = true;
 	}
