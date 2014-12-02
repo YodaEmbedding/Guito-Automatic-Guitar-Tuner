@@ -49,9 +49,10 @@ public class MainActivity extends Activity
 	private double pitchInHz = -1.0;
 	private Integer filteredHz = -1;
 	private MovingAverage avgPitch = new MovingAverage();
-	private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+	// private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledExecutorService executor2 = Executors.newSingleThreadScheduledExecutor();
 	GraphView.GraphViewData[] gvPitch = null;
+	private int GRAPH_POINTS = 80;
 
 	public int counter = 0;
 	public int counterGraph = 0;
@@ -69,6 +70,16 @@ public class MainActivity extends Activity
 			"440, 73 110 147 196 247 330", // Drop D
 			"440, 78 104 139 185 233 311"  // E flat (Standard, half-step down)
 	};
+
+	Integer[][] tuning_ipitches = {
+			// <Concert pitch>, <Notes from top/thickest to bottom/thinnest string>
+			{82, 110, 147, 196, 247, 330}, // Standard Tuning
+			{73, 110, 147, 196, 247, 330}, // Drop D
+			{78, 104, 139, 185, 233, 311}  // E flat (Standard, half-step down)
+	};
+
+	private int currTuning = 0;
+	private int currString = 0;
 
 	private int TUNING_STANDARD = 0;
 	private int TUNING_DROPD = 1;
@@ -95,6 +106,8 @@ public class MainActivity extends Activity
 		{
 			public void onClick(View v)
 			{
+				currTuning = TUNING_STANDARD;
+				currString = 0;
 				// Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_STANDARD]);
 				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'F', tuning_pitches[TUNING_STANDARD]);
 			}
@@ -104,6 +117,8 @@ public class MainActivity extends Activity
 		{
 			public void onClick(View v)
 			{
+				currTuning = TUNING_DROPD;
+				currString = 0;
 				// Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_DROPD]);
 				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'F', tuning_pitches[TUNING_DROPD]);
 			}
@@ -113,6 +128,8 @@ public class MainActivity extends Activity
 		{
 			public void onClick(View v)
 			{
+				currTuning = TUNING_EFLAT;
+				currString = 0;
 				// Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_EFLAT]);
 				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'F', tuning_pitches[TUNING_EFLAT]);
 			}
@@ -122,7 +139,11 @@ public class MainActivity extends Activity
 		{
 			public void onClick(View v)
 			{
-				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'N', "");
+				if((currString + 1) < tuning_ipitches[currTuning].length)
+				{
+					++currString;
+					Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'N', "");
+				}
 			}
 		});
 
@@ -165,16 +186,21 @@ public class MainActivity extends Activity
 
 					filteredHz = (int) avgPitch.getAverage();
 
-					Log.d(TAG, "raw: " + (int) (pitchInHz) + ", avg: " + filteredHz.toString());
+					// Log.d(TAG, "raw: " + (int) (pitchInHz) + ", avg: " + filteredHz.toString());
 
-					// UI code will only run on UI Thread!!
-					// WTF ANDROID?? Y U DO DIS??
-					// TOOK ME 2 HOURS TO FIGURE OUT SRSLY
 					runOnUiThread(new Runnable(){
 						public void run(){
 							TextView twCurrPitch = (TextView)findViewById(R.id.twCurrPitch);
-							CharSequence cs = "Current Pitch: " + filteredHz.toString();
-							twCurrPitch.setText(cs);
+							ProgressBar progressBar = (ProgressBar) (findViewById(R.id.progressBar));
+
+							twCurrPitch.setText("Current Pitch: " +
+									"Raw: " + (int)pitchInHz +
+									", Avg: " +  filteredHz.toString());
+
+							if(filteredHz == -1)
+								progressBar.setProgress(50);
+							else
+								progressBar.setProgress(50 * (filteredHz - getGoalFrequency()) / getGoalFrequency() + 50);
 						}
 					});
 
@@ -187,25 +213,23 @@ public class MainActivity extends Activity
 				{
 					counterGraph = 0;
 
-					final GraphView graphView = new LineGraphView(context, "Pitch vs Time");
+					final GraphView graphView = new LineGraphView(context, "Pitch (Hz) vs Time (1s)");
 
-					int num = 150;
-					GraphView.GraphViewData[] data = new GraphView.GraphViewData[num];
-					double v=0;
-					for (int i=0; i<num; i++) {
-						v += 0.2;
-						data[i] = new GraphView.GraphViewData(i, Math.sin(v));
+					GraphView.GraphViewData[] data = new GraphView.GraphViewData[GRAPH_POINTS];
+
+					for (int i = 0; i < GRAPH_POINTS; i++) {
+						data[i] = new GraphView.GraphViewData(1.0 * i / GRAPH_POINTS, getGoalFrequency() + 10 * Math.sin(i));
 					}
 
-					GraphViewSeries seriesAvg = new GraphViewSeries("Sinus curve", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(200, 50, 00), 3), data);
+					GraphViewSeries seriesAvg = new GraphViewSeries("Avg", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(200, 50, 00), 3), data);
 
 					graphView.addSeries(seriesAvg);
 					//graphView.addSeries(seriesFiltered);
 					//graphView.addSeries(seriesPitch);
-// optional - set view port, start=2, size=10
-					graphView.setViewPort(0, 10.0);
-					graphView.setManualYAxisBounds(50.0, 0.0);
 
+					graphView.setViewPort(0.0, 1.0);
+					graphView.setManualYAxisBounds(getGoalFrequency() + 50.0, getGoalFrequency() - 50.0);
+					// graphView.setScaleY(0.2f);
 
 					runOnUiThread(new Runnable()
 					{
@@ -298,7 +322,6 @@ public class MainActivity extends Activity
 	 */
 	public class ArduinoReceiver extends BroadcastReceiver
 	{
-
 		@Override
 		public void onReceive(Context context, Intent intent)
 		{
@@ -320,12 +343,6 @@ public class MainActivity extends Activity
 				if (data != null)
 				{
 					Log.e(TAG, data);
-
-					// TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
-                    // numCurrentPitch.setText(data);
-
-					// ProgressBar progressBar = (ProgressBar)(findViewById(R.id.progressBar));
-					// progressBar.setProgress(100 * (filteredHz - 440) + 50);
 				}
 			}
 		}
@@ -355,5 +372,11 @@ public class MainActivity extends Activity
 		}
 
 		return super.onOptionsItemSelected(item);
+	}
+
+
+	public int getGoalFrequency()
+	{
+		return tuning_ipitches[currTuning][currString];
 	}
 }

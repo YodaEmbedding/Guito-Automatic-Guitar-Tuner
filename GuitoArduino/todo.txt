@@ -13,7 +13,10 @@ Tarsos probability?
 
 Notification on phone when tuned
 
-curr string
-green light, progress bar
+current string?
+green/red progress bar
 
 Get Drop D/Eflat pitches
+
+
+
