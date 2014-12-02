@@ -42,15 +42,25 @@ public class MainActivity extends Activity
 	private Context context = this; // getApplicationContext();
 	private Thread pitchThread = null;
 	private double pitchInHz = -1.0;
+	private int filteredHz = -1;
 	private MovingAverage avgPitch = new MovingAverage();
-	private ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
-	// private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+	private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+	private ScheduledExecutorService executor2 = Executors.newSingleThreadScheduledExecutor();
+
+	public int counter = 0;
 
 	String[] tuning_notes = {
-		// <Concert pitch>, <Notes from top/thickest to bottom/thinnest string>
-		"440, E2 A2 D3 G3 B3 E4", // Standard Tuning
-		"440, D2 A2 D3 G3 B3 E4", // Drop D
-		"440, Eb2 Ab2 Db3 Gb3 Bb3 Eb4" // E flat (Standard, half-step down)
+			// <Concert pitch>, <Notes from top/thickest to bottom/thinnest string>
+			"440, E2 A2 D3 G3 B3 E4", // Standard Tuning
+			"440, D2 A2 D3 G3 B3 E4", // Drop D
+			"440, Eb2 Ab2 Db3 Gb3 Bb3 Eb4" // E flat (Standard, half-step down)
+	};
+
+	String[] tuning_pitches = {
+			// <Concert pitch>, <Notes from top/thickest to bottom/thinnest string>
+			"440, 82 110 147 196 247 330", // Standard Tuning
+			"440, 82 110 147 196 247 330", // Drop D
+			"440, 82 110 147 196 247 330" // E flat (Standard, half-step down)
 	};
 
 	private int TUNING_STANDARD = 0;
@@ -63,8 +73,10 @@ public class MainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		Log.e(TAG, "onCreate()");
+
 		// get handles to Views and Buttons defined in our layout file
-		final TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
+		// final TextView twCurrPitch = (TextView) findViewById(R.id.twCurrPitch);
 		Button btnTuneStandard = (Button) findViewById(R.id.btnTuneStandard);
 		Button btnTuneDropD = (Button) findViewById(R.id.btnTuneDropD);
 		Button btnTuneEFlat = (Button) findViewById(R.id.btnTuneEFlat);
@@ -76,9 +88,8 @@ public class MainActivity extends Activity
 		{
 			public void onClick(View v)
 			{
-				TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
-				numCurrentPitch.setText("" + (int) avgPitch.getAverage());
-				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_STANDARD]);
+				// Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_STANDARD]);
+				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'F', tuning_pitches[TUNING_STANDARD]);
 			}
 		});
 
@@ -86,7 +97,8 @@ public class MainActivity extends Activity
 		{
 			public void onClick(View v)
 			{
-				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_DROPD]);
+				// Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_DROPD]);
+				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'F', tuning_pitches[TUNING_DROPD]);
 			}
 		});
 
@@ -94,7 +106,8 @@ public class MainActivity extends Activity
 		{
 			public void onClick(View v)
 			{
-				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_EFLAT]);
+				// Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'T', tuning_notes[TUNING_EFLAT]);
+				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'F', tuning_pitches[TUNING_EFLAT]);
 			}
 		});
 
@@ -120,14 +133,7 @@ public class MainActivity extends Activity
 			@Override
 			public void run()
 			{
-				Log.e(TAG, "sendPitchTask() start");
-
-				TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
-				numCurrentPitch.setText("" + (int) avgPitch.getAverage());
-
-				Amarino.sendDataToArduino(context,  DEVICE_ADDRESS, 'C', (int)avgPitch.getAverage());
-
-				Log.e(TAG, "sendPitchTask() end");
+				//
 			}
 		};
 
@@ -137,19 +143,47 @@ public class MainActivity extends Activity
 			public void run()
 			{
 				// pitchInHz = result.getPitch();
-				avgPitch.push(pitchInHz);
-				Log.e(TAG, "getPitchTask()");
+
+				if(pitchInHz >= 1000.0)
+					pitchInHz = -1.0;
+
+				avgPitch.push((int) pitchInHz);
+				//Log.e(TAG, "getPitchTask()");
+
+				if(counter >= 8)
+				{
+					counter = 0;
+
+					//Log.e(TAG, "sendPitchTask() start");
+
+					filteredHz = (int) avgPitch.getAverage();
+
+					Log.d(TAG, "raw: " + (int) (pitchInHz) + ", avg: " + filteredHz);
+
+
+					// TextView twCurrPitch = (TextView) (findViewById(R.id.twCurrPitch));
+					// twCurrPitch.setText("Current Pitch: " + pitchInHz);
+
+
+					Amarino.sendDataToArduino(context,  DEVICE_ADDRESS, 'C', "" + filteredHz);
+
+					//Log.e(TAG, "sendPitchTask() end");
+				}
+
+				++counter;
 			}
 		};
 
-		executor.scheduleAtFixedRate(sendPitchTask, 1000, 100, TimeUnit.MILLISECONDS);
-		executor.scheduleAtFixedRate(getPitchTask, 1000, 100 / 8, TimeUnit.MILLISECONDS);
+		// executor.scheduleAtFixedRate(sendPitchTask, 1010, 100, TimeUnit.MILLISECONDS);
+		executor2.scheduleAtFixedRate(getPitchTask, 1000, 100 / 8, TimeUnit.MILLISECONDS);
 	}
 
 	@Override
 	protected void onStart()
 	{
 		super.onStart();
+
+		Log.e(TAG, "onStart()");
 
 		// Set up pitch tracker
 		AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
@@ -172,6 +206,8 @@ public class MainActivity extends Activity
 	protected void onResume() {
 		super.onResume();
 
+		Log.e(TAG, "onResume()");
+
 		pitchThread.start();
 
 		// in order to receive broadcasted intents we need to register our receiver
@@ -184,6 +220,8 @@ public class MainActivity extends Activity
 	@Override
 	protected void onPause() {
 		super.onPause();
+
+		Log.e(TAG, "onPause()");
 
 		pitchThread.interrupt();
 
@@ -198,6 +236,7 @@ public class MainActivity extends Activity
 	protected void onStop() {
 		super.onStop();
 
+		Log.e(TAG, "onStop()");
 
 	}
 
@@ -232,6 +271,8 @@ public class MainActivity extends Activity
 
 				if (data != null)
 				{
+					Log.e(TAG, data);
+
 					// TextView numCurrentPitch = (TextView) findViewById(R.id.numCurrentPitch);
                     // numCurrentPitch.setText(data);
 				}

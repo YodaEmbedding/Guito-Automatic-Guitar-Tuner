@@ -10,11 +10,11 @@ import java.util.Iterator;
 public class MovingAverage
 {
 	private int SIZE_MAX = 8;
-	private Queue<Double> queue = new LinkedList<Double>();
-	private Double average;
+	private Queue<Integer> queue = new LinkedList<Integer>();
+	private Integer average;
 	private boolean resetflag = true;
 
-	double getAverage()
+	int getAverage()
 	{
 		if(resetflag == true)
 		{
@@ -24,7 +24,7 @@ public class MovingAverage
 		return average;
 	}
 
-	void push(Double t)
+	void push(Integer t)
 	{
 		if(queue.size() >= SIZE_MAX)
 		{
@@ -33,6 +33,8 @@ public class MovingAverage
 
 		queue.add(t);
 
+		// average = t;
+
 		resetflag = true;
 	}
 
@@ -40,21 +42,36 @@ public class MovingAverage
 	{
 		if(queue.isEmpty())
 		{
-			average = -1.0;
+			average = -1;
 			resetflag = false;
 			return;
 		}
 
+		int n = 0;
+		Integer i = -1;
+
 		//access via Iterator
-		Iterator<Double> it = queue.iterator();
-		average = it.next();
+		Iterator<Integer> it = queue.iterator();
+
+		average = 0;
 
 		while(it.hasNext())
 		{
-			average += it.next();
+			i = it.next();
+
+			if(i == -1)
+			{
+				continue;
+			}
+
+			average += i;
+			++n;
 		}
 
-		average /= queue.size();
+		if(n == 0)
+			average = -1;
+		else
+			average = average / n;
 
 		resetflag = false;
 	}

@@ -7,7 +7,7 @@
 // License:     GPLv3
 
 
-// #define USB_DEBUG
+// #define USB_DEBUG  // USING SAME BAUD RATE AS BT!!
 // #define TEST
 #define ENABLE_BT
 // #define ENABLE_PID
@@ -39,7 +39,7 @@ MeetAndroid meetAndroid;
 
 // TORQUE = 38 oz-in torque @ 6 V
 const int RADIUS = 30;
-const int AXLE_RADIUS = 5;
+const int AXLE_RADIUS = 10;
 const int GEAR_RATIO = 1;
 // PWR / w  ~=  255 / (360 * rps)
 const double PWR_OVER_W = 255.0 / (360.0 * 0.25);
@@ -76,7 +76,7 @@ int distance = 0;
 double pid_in = 0.0;
 double pid_out = 0.0;
 double pid_setpoint = 0.0;
-PID pid(&pid_in, &pid_out, &pid_setpoint, 1.0, 0.2, 0.5, DIRECT);
+PID pid(&pid_in, &pid_out, &pid_setpoint, 0.3, 0.0, 0.3, DIRECT);
 #endif
 
 
@@ -95,6 +95,7 @@ void setup()
 
 #ifdef USB_DEBUG
   Serial.begin(9600);
+  // USING SAME BAUD RATE AS BT!!
 #endif
 
 #ifdef ENABLE_PID
@@ -155,18 +156,33 @@ void loop()
   {
 #ifdef ENABLE_PID
     // Compute dTheta/dt
-    pid.Compute();
+    if(frequency > 0)
+    {
+      pid.Compute();
 
-    // Convert pid_out to power
-    power = angularVelocityToPower(pid_out);
+      // Convert pid_out to power
+      power = angularVelocityToPower(pid_out);
+    }
+    else
+    {
+      power = 0;
+    }
 #else
-    if((frequency >= (goalFrequency - 1)) && (frequency <= (goalFrequency + 1)))
+    if(frequency <= 0)
+    {
+      power = 0;
+    }
+    else if((frequency >= (goalFrequency - 1)) && (frequency <= (goalFrequency + 1)))
     {
       power = 0;
     }
     else
     {
-      power = constrain((goalFrequency - frequency) * 10, -255, 255);
+      // power = constrain((goalFrequency - frequency) * 10, -255, 255);
+      if(frequency > goalFrequency)
+        power = 64;
+      else
+        power = -64;
     }
 #endif
     
@@ -176,11 +192,19 @@ void loop()
 
 #ifdef ENABLE_BT
     static int lastSent = millis();
-    if((lastSent + 500) <= millis())
+    if((lastSent + 100) <= millis())
     {
       lastSent = millis();
 
-      meetAndroid.send(power);
+      char TempString[63] = {0};  //  Hold The Convert Data
+
+  #ifdef ENABLE_PID
+      sprintf(TempString, "Goal: %d, Curr: %d, Pow: %d, PIDout: %f", goalFrequency, frequency, power, pid_out);
+  #else
+      sprintf(TempString, "Goal: %d, Curr: %d, Pow: %d", goalFrequency, frequency, power);
+  #endif
+
+      meetAndroid.send(TempString);
     }
 #endif
   }

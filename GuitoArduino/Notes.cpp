@@ -70,6 +70,8 @@ bool isValidNoteChar(char c)
 // Accepts note string and returns steps from A4
 int stepsFromA4(String s)
 {
+#ifdef NOTES_FROM_TABLE
+#else
   int i = 0;
   int n = 0;
   int octave = 4;
@@ -120,6 +122,8 @@ int stepsFromA4(String s)
   octave = s.substring(i).toInt();
 
   n += (octave - 4) * 12;
+#endif
+
 
   return 0;
 }
@@ -132,6 +136,8 @@ int stepsFromA4(String s)
 // s = "440, E2 A2 D3 G3 B3 E4"
 void parseNoteString(Tuning t[], String s) 
 {
+#ifdef NOTES_FROM_TABLE
+#else
   int j = 0; // position in string
   int k = 0; // guitar string #
 
@@ -156,6 +162,7 @@ void parseNoteString(Tuning t[], String s)
   // Parse string
   for(; j < len;)
   {
+    // Skip invalid characters like , and space
     if(!isValidNoteChar(s[j]))
     {
       ++j;
@@ -168,10 +175,65 @@ void parseNoteString(Tuning t[], String s)
       note = note + s[j];
     }
 
-    t[k].pitch = concertPitch + pow(TWELFTH_ROOT_OF_TWO, stepsFromA4(note));
+    t[k].pitch = concertPitch * pow(TWELFTH_ROOT_OF_TWO, stepsFromA4(note));
+    ++k;
+
+    // T (Tension) = (UW x (2 x L x F)2) / 386.4
+    // t[k].tension = ????? WTFF?????;
+  }
+#endif
+}
+
+
+// Converts s into t
+// Accepts s of format:
+// <Concert Pitch>, <Notes>
+// Example:
+// s = "440, 1 2 3 4 5 6"
+void parsePitchString(Tuning t[], String s)
+{
+  int j = 0; // position in string
+  int k = 0; // guitar string #
+
+  int len = s.length();
+
+  String note = "";
+
+  // Get concert pitch
+  for(; j < len; ++j)
+  {
+    if(s[j] == ',')
+    {
+      ++j;
+      break;
+    }
+
+    note = note + s[j];
+  }
+  
+  concertPitch = note.toInt();
+
+  // Get tuning pitches
+  for(; j < len;)
+  {
+    // Skip invalid characters like , and space
+    if(!isValidNoteChar(s[j]))
+    {
+      ++j;
+      continue;
+    }
+
+    // Get note
+    for(note = ""; isValidNoteChar(s[j]); ++j)
+    {
+      note = note + s[j];
+    }
+
+    t[k].pitch = note.toInt();
     ++k;
 
     // T (Tension) = (UW x (2 x L x F)2) / 386.4
     // t[k].tension = ????? WTFF?????;
   }
 }
+

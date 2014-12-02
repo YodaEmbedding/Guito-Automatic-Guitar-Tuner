@@ -6,3 +6,14 @@ Get conversion constants
 pitchToDistance() estimate
 Distance Estimation algorithm
 
+
+Cut out background noise (Noise gate)
+Tarsos probability?
+
+
+Notification on phone when tuned
+
+curr string
+green light, progress bar
+
+Get Drop D/Eflat pitches

@@ -61,7 +61,11 @@ void receiveCommand(byte flag, byte numOfValues)
     break;
 
   case 'F':
-    // Int buffer
+    // Get tuning information
+    // In terms of direct frequency values
+    parsePitchString(currTuning, command);
+    setString(0);
+    stopped = false;
     break;
 
   case 'T':

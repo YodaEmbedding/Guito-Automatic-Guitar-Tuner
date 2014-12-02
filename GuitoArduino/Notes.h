@@ -54,6 +54,7 @@ void nextString();
 bool isValidNoteChar(char c);
 int stepsFromA4(String s);
 void parseNoteString(Tuning t[], String s);
+void parsePitchString(Tuning t[], String s);
 
 
 #endif

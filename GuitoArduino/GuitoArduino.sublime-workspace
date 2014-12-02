@@ -43,38 +43,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "todo.txt",
-			"settings":
-			{
-				"buffer_size": 165,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "GuitoArduino.ino",
-			"settings":
-			{
-				"buffer_size": 3982,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "Motor.cpp",
-			"settings":
-			{
-				"buffer_size": 1211,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"contents": "\n\n",
-			"settings":
-			{
-				"buffer_size": 2,
-				"line_ending": "Windows"
-			}
-		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -125,23 +93,39 @@
 	],
 	"file_history":
 	[
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Motor.cpp",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Motor.h",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Comm.cpp",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Notes.cpp",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Notes.h",
-		"/arduino/hardware/tools/avr/avr/include/stdlib.h",
 		"/C/Program Files (x86)/Arduino/libraries/MeetAndroid/MeetAndroid.cpp",
-		"/C/Users/Mateen/Downloads/code_51565.txt",
-		"/c/program files (x86)/arduino/libraries/Servo/examples/Knob/Knob.ino",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Comm.h",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Notes.cpp",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Motor.cpp",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/GuitoArduino.ino",
+		"/C/Users/Mateen/Dropbox/Misc/Notepad/My vocal range",
+		"/C/Users/Mateen/Documents/GitHub/TarsosDSP/android/be/tarsos/dsp/io/android/AudioDispatcherFactory.java",
+		"/C/Users/Mateen/Documents/GitHub/TarsosDSP/android/be/tarsos/dsp/io/android/AndroidAudioInputStream.java",
+		"/C/Users/Mateen/Downloads/TarsosDSPAndroid/src/be/tarsos/tarsos/dsp/android/ui/TarsosDSPActivity.java",
+		"/C/Users/Mateen/Documents/GitHub/TarsosDSP/android/be/tarsos/dsp/io/android/package-info.java",
+		"/C/Users/Mateen/Documents/GitHub/TarsosDSP/examples/be/tarsos/dsp/example/PitchDetectorExample.java",
+		"/C/Users/Mateen/AppData/Local/Temp/7zOF185.tmp/tarsosdsppitch.java",
+		"/C/Users/Mateen/AppData/Local/Temp/7zO6908.tmp/pdj_test_class.java",
+		"/C/Users/Mateen/Documents/TortoiseSVN/android-guitar-tuner/src/com/example/GuitarTuner/PitchDetector.java",
+		"/C/Users/Mateen/Documents/TortoiseSVN/android-guitar-tuner/src/com/example/GuitarTuner/GuitarTunerActivity.java",
+		"/C/Users/Mateen/Documents/TortoiseSVN/android-guitar-tuner/src/com/example/GuitarTuner/PitchDetectionRepresentation.java",
+		"/C/Users/Mateen/Documents/TortoiseSVN/android-guitar-tuner/fft_jni/fft.cpp",
+		"/C/Users/Mateen/Documents/TortoiseSVN/android-guitar-tuner/fft_jni/fft.h",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/pitch_detector_yin_src/src/ui/SimplePitchDetector.java",
 		"/C/Users/Mateen/Dropbox/random physics.txt",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/todo.txt",
+		"/C/Users/Mateen/Documents/TortoiseSVN/android-guitar-tuner/res/values/strings.xml",
+		"/C/Users/Mateen/AppData/Local/Temp/7zO1CAF.tmp/pdj_test_class.java",
+		"/C/Users/Mateen/AppData/Local/Temp/7zO24BE.tmp/tarsosdsppitch.java",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Motor.h",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Comm.cpp",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Notes.h",
+		"/arduino/hardware/tools/avr/avr/include/stdlib.h",
+		"/C/Users/Mateen/Downloads/code_51565.txt",
+		"/c/program files (x86)/arduino/libraries/Servo/examples/Knob/Knob.ino",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Comm.h",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/libraries/README.txt",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/pitch_detector_yin_src/src/ui/Yin.java",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/Arduino-PID-Library/PID_v1/PID_v1.cpp",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/GuitoArduino.ino",
 		"/C/Users/Mateen/Documents/Arduino_build/GuitoArduino/GuitoArduino.ino.cpp.o:C:/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/GuitoArduino.ino",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/Arduino-PID-Library/PID_v1/PID_v1.h",
 		"/C/Users/Mateen/Documents/GitHub/Stylish-Google-Drive-Dark/gpl.txt",
@@ -236,18 +220,7 @@
 		"/C/MyThemes/Abisso 2014 by Ezio/THEME files/No Details Pane version/Instructions.txt",
 		"/C/MyThemes/ONE/readme.txt",
 		"/C/Users/Mateen/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
-		"/C/Users/Mateen/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap",
-		"/C/mozilla-build/helloworld/test/test-main.js",
-		"/C/Users/Mateen/Documents/GitHub/treestyletab/content/treestyletab/treestyletab.js",
-		"/C/Users/Mateen/Documents/GitHub/treestyletab/locale/en-US/treestyletab/treestyletab.dtd",
-		"/C/Users/Mateen/Documents/GitHub/treestyletab/modules/browser.js",
-		"/C/Users/Mateen/Documents/GitHub/treestyletab/content/treestyletab/config.css",
-		"/C/Users/Mateen/Documents/GitHub/treestyletab/content/treestyletab/bookmarksOverlay.xul",
-		"/C/Users/Mateen/Documents/GitHub/treestyletab/content/treestyletab/bookmarksOverlay.js",
-		"/C/Users/Mateen/AppData/Roaming/Sublime Text 3/Packages/User/JSON.sublime-settings",
-		"/C/Users/Mateen/AppData/Roaming/Sublime Text 3/Packages/User/Distraction Free.sublime-settings",
-		"/C/Users/Mateen/AppData/Roaming/Sublime Text 3/Packages/User/C++.sublime-settings",
-		"/C/Program Files/Sublime Text 3/_multiprocessing.pyd"
+		"/C/Users/Mateen/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap"
 	],
 	"find":
 	{
@@ -265,6 +238,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"AudioInputProcessor",
 			"\\?",
 			"?",
 			"startFlag",
@@ -309,125 +283,8 @@
 	"groups":
 	[
 		{
-			"selected": 3,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "todo.txt",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 165,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								119,
-								119
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "GuitoArduino.ino",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3982,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								785,
-								785
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/User/Stino/Arduino.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 2725.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "Motor.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1211,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								449,
-								449
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 229.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"auto_name": "",
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				}
 			]
 		}
 	],
