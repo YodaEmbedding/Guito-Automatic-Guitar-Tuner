@@ -242,7 +242,7 @@ public class MainActivity extends Activity
 				{
 					counterGraph = 0;
 
-					final GraphView graphView = new LineGraphView(context, "Pitch (Hz) vs Time (1s)");
+					final GraphView graphView = new LineGraphView(context, "" /*"Pitch (Hz) vs Time (1s)"*/);
 
 					GraphView.GraphViewData[] data = new GraphView.GraphViewData[GRAPH_POINTS];
 					Integer[] store = avgPitch.getStore();
@@ -261,8 +261,10 @@ public class MainActivity extends Activity
 					//graphView.addSeries(seriesPitch);
 
 					graphView.setViewPort(0.0, 1.0);
-					graphView.setManualYAxisBounds(getGoalFrequency() + 30.0, getGoalFrequency() - 30.0);
+					double max = getGoalFrequency() * Math.pow(2.0, 3.0/12.0);
+					graphView.setManualYAxisBounds(max, getGoalFrequency() - (max - getGoalFrequency()));
 					graphView.getGraphViewStyle().setNumVerticalLabels(3);
+					graphView.getGraphViewStyle().setNumHorizontalLabels(2);
 					// graphView.setScaleY(0.2f);
 
 					runOnUiThread(new Runnable()
@@ -421,7 +423,7 @@ public class MainActivity extends Activity
 
 	private int getProgressColor(int alpha)
 	{
-		double error = 1.0 * Math.abs(filteredHz - getGoalFrequency()) / getGoalFrequency();
+		double error = contain(4.0 * Math.abs(filteredHz - getGoalFrequency()) / getGoalFrequency(), 0.0, 1.0);
 		// Equation of circle. Properties:
 		// If error is small, dColor/derror = high
 		// If error is large, dColor/derror = small
