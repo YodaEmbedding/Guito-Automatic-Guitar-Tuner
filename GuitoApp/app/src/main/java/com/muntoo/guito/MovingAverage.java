@@ -1,5 +1,6 @@
 package com.muntoo.guito;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Iterator;
@@ -9,8 +10,9 @@ import java.util.Iterator;
  */
 public class MovingAverage
 {
-	private int SIZE_MAX = 8;
+	private int SIZE_MAX = 16;
 	private Queue<Integer> queue = new LinkedList<Integer>();
+	private Object[] sorted;
 	private Integer average;
 	private boolean resetflag = true;
 
@@ -18,7 +20,8 @@ public class MovingAverage
 	{
 		if(resetflag == true)
 		{
-			calculateAverage();
+			// calculateMean();
+			calculateMedian();
 		}
 
 		return average;
@@ -38,7 +41,7 @@ public class MovingAverage
 		resetflag = true;
 	}
 
-	void calculateAverage()
+	void calculateMean()
 	{
 		if(queue.isEmpty())
 		{
@@ -72,6 +75,27 @@ public class MovingAverage
 			average = -1;
 		else
 			average = average / n;
+
+		resetflag = false;
+	}
+
+	public void calculateMedian()
+	{
+		if(queue.isEmpty())
+		{
+			average = -1;
+			resetflag = false;
+			return;
+		}
+
+		sorted = queue.toArray();
+		Arrays.sort(sorted);
+
+		average = (Integer)sorted[sorted.length / 2];
+
+		// If median is -1, cut off first half of the values and find median of second half
+		if(average == -1)
+			average = (Integer)sorted[sorted.length * 3 / 4];
 
 		resetflag = false;
 	}
