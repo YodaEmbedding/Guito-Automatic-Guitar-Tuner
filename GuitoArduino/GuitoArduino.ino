@@ -88,6 +88,7 @@ void setup()
   meetAndroid.registerFunction(receivePitch, 'C');
   meetAndroid.registerFunction(receiveCommand, 'X');
   meetAndroid.registerFunction(receiveCommand, 'T');
+  meetAndroid.registerFunction(receiveCommand, 'S');
   meetAndroid.registerFunction(receiveCommand, 'F');
   meetAndroid.registerFunction(receiveCommand, 'N');
   meetAndroid.registerFunction(receiveCommand, 'P');

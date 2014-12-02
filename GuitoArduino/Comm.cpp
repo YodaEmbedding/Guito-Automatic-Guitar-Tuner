@@ -44,6 +44,11 @@ void receiveCommand(byte flag, byte numOfValues)
     stopped = true;
     break;
 
+  case 'S':
+    // Start
+    stopped = false;
+    break;    
+
   case 'P':
     // Ping
     meetAndroid.send("Ping received on " + millis());

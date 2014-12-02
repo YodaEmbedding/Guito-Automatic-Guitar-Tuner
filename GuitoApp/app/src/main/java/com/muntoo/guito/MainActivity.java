@@ -104,6 +104,7 @@ public class MainActivity extends Activity
 		Button btnTuneDropD = (Button) findViewById(R.id.btnTuneDropD);
 		Button btnTuneEFlat = (Button) findViewById(R.id.btnTuneEFlat);
 		Button btnTuneNextString = (Button) findViewById(R.id.btnNextString);
+		Button btnTuneStart = (Button) findViewById(R.id.btnStart);
 		Button btnTuneStop = (Button) findViewById(R.id.btnStop);
 
 		// UI listeners
@@ -149,6 +150,14 @@ public class MainActivity extends Activity
 					++currString;
 					Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'N', "");
 				}
+			}
+		});
+
+		btnTuneStart.setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View v)
+			{
+				Amarino.sendDataToArduino(context, DEVICE_ADDRESS, 'S', "");
 			}
 		});
 

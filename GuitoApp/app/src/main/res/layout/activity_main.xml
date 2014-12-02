@@ -66,16 +66,34 @@
         android:id="@+id/commands"
         android:layout_alignParentEnd="true"
         android:layout_above="@+id/info"
-        android:background="#20ff0d00">
+        android:background="#20ff0d00"
+        android:layout_alignParentRight="true">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stop"
-            android:id="@+id/btnStop"
-            android:layout_gravity="center_horizontal"
-            android:layout_above="@+id/info"
-            android:layout_centerHorizontal="true"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:id="@+id/lStartStop">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start"
+                android:id="@+id/btnStart"
+                android:layout_above="@+id/info"
+                android:layout_centerHorizontal="true"
+                />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stop"
+                android:id="@+id/btnStop"
+                android:layout_above="@+id/info"
+                android:layout_centerHorizontal="true"
+                />
+        </LinearLayout>
 
         <Button
             android:layout_width="wrap_content"
