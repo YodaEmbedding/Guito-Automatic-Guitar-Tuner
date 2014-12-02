@@ -175,14 +175,23 @@ void loop()
     else if((frequency >= (goalFrequency - 1)) && (frequency <= (goalFrequency + 1)))
     {
       power = 0;
+      stopped = true;
+    }
+    else if(abs(frequency - goalFrequency) > 5)
+    {
+      // power = constrain((goalFrequency - frequency) * 10, -255, 255);
+      if(frequency > goalFrequency)
+        power = 50;
+      else
+        power = -50;
     }
     else
     {
       // power = constrain((goalFrequency - frequency) * 10, -255, 255);
       if(frequency > goalFrequency)
-        power = 64;
+        power = 30;
       else
-        power = -64;
+        power = -30;
     }
 #endif
     

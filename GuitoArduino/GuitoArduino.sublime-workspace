@@ -43,6 +43,41 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "todo.txt",
+			"settings":
+			{
+				"buffer_size": 314,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "Notes.cpp",
+			"settings":
+			{
+				"buffer_size": 3732,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Notes.h",
+			"settings":
+			{
+				"buffer_size": 1076,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "package com.android.sensorhandle;\n\nimport java.util.ArrayList;\nimport java.util.Arrays;\n\nimport android.content.Context;\nimport android.graphics.Canvas;\nimport android.graphics.Color;\nimport android.graphics.Paint;\nimport android.view.View;\n\npublic class plotDynamic extends View {\n\n	public String title = \"default\";\n	private Paint paint;\n	private ArrayList<String> xvalues = new ArrayList<String>();\n	private ArrayList<String> yvalues = new ArrayList<String>();\n	private float maxy,miny;\n	private int xIncrement = 1, initiate = 0, nX;\n	\n	public plotDynamic(Context context) {\n		super(context);\n		this.yvalues.add(\"0\");\n		paint = new Paint();\n		\n	}\n\n	@Override\n	protected void onDraw(Canvas canvas) {\n		\n		float canvasHeight = getHeight();\n		float canvasWidth = getWidth();\n		\n		if (initiate == 0){\n			xvalues.add(\"\"+0.1*canvasWidth);\n			nX = (int) (0.9*canvasWidth/xIncrement);\n			initiate = 1;\n		}\n		\n		float[] y = new float[yvalues.size()];\n		y = getFloat(yvalues);\n		maxy=getMax(y);\n		miny=getMin(y);\n		\n		int[] yvaluesInPixels = toPixel(canvasHeight, miny, maxy, y);\n		\n		canvas.drawARGB(255, 255, 255, 255);\n\n		paint.setStrokeWidth(2);\n		paint.setColor(Color.BLACK);\n		paint.setTextSize(20.0f);\n		canvas.drawLine(0,canvasHeight/2,canvasWidth,canvasHeight/2,paint);\n		canvas.drawLine((float)0.1*canvasWidth,0,(float)0.1*canvasWidth,canvasHeight,paint);\n		canvas.drawText(title, (float)0.7*canvasWidth,(float)0.1*canvasHeight, paint);\n		\n		paint.setColor(Color.RED);\n		\n		if (xvalues.size()==1){\n			canvas.drawCircle(fromObjectToFloat(xvalues.get(0)),canvasHeight-yvaluesInPixels[0],2,paint);\n		}\n		else {\n			for (int i = 0; i < xvalues.size()-1; i++) {\n				canvas.drawCircle(fromObjectToFloat(xvalues.get(i)),canvasHeight-yvaluesInPixels[i],2,paint);\n				canvas.drawCircle(fromObjectToFloat(xvalues.get(i+1)),canvasHeight-yvaluesInPixels[i+1],2,paint);\n				canvas.drawLine(fromObjectToFloat(xvalues.get(i)),canvasHeight-yvaluesInPixels[i],fromObjectToFloat(xvalues.get(i+1)),canvasHeight-yvaluesInPixels[i+1],paint);\n			}\n		}\n		\n		\n	}\n	\n	private Float fromObjectToFloat(Object o){\n		String tempS = o.toString();\n		Float f = new Float(tempS);\n		return f;\n	}\n	\n	public void addData(float s){\n		yvalues.add(\"\"+s);\n		\n		if (yvalues.size()>nX){\n			yvalues.remove(0);\n		}\n		else {\n			float tt = fromObjectToFloat(xvalues.get(xvalues.size()-1))+xIncrement;\n			xvalues.add(\"\"+tt);\n		}\n			\n	}\n	\n	public void clearData(){\n		Object temp = xvalues.get(0);\n		xvalues.clear();\n		xvalues.add(\"\"+temp);\n		temp = yvalues.get(0);\n		yvalues.clear();\n		yvalues.add(\"\"+temp);\n	}\n	\n	private float[] getFloat(ArrayList<String> value) {\n		\n		float[] v = new float[value.size()];\n		\n		Object []tempO = value.toArray();\n		String[] temp = Arrays.copyOf(tempO, tempO.length, String[].class);\n		\n		for (int i=0;i<value.size();i++){\n			Float f = new Float(temp[i]);\n			v[i]=f.floatValue();\n		}\n		\n		return (v);\n	}\n	\n	private int[] toPixel(float pixels, float min, float max, float[] value) {\n		\n		double[] p = new double[value.length];\n		int[] pint = new int[value.length];\n		\n		for (int i = 0; i < value.length; i++) {\n			if(value[i]>0){\n				p[i] = pixels/2+((value[i])/(max))*.9*pixels/2;\n				pint[i] = (int)p[i];\n			}\n			else if(value[i]<0){\n				p[i] = pixels/2-((value[i])/(min))*.9*pixels/2;\n				pint[i] = (int)p[i];\n			}\n			else {\n				pint[i] = (int)pixels/2;\n			}\n			\n		}\n		\n		return (pint);\n	}\n\n	private float getMax(float[] v) {\n		float largest = v[0];\n		for (int i = 0; i < v.length; i++)\n			if (v[i] > largest)\n				largest = v[i];\n		return largest;\n	}\n\n	private float getMin(float[] v) {\n		float smallest = v[0];\n		for (int i = 0; i < v.length; i++)\n			if (v[i] < smallest)\n				smallest = v[i];\n		return smallest;\n	}\n\n}\n",
+			"file": "/C/Users/Mateen/AppData/Local/Temp/7zO97AF.tmp/plotDynamic.java",
+			"file_size": -1,
+			"file_write_time": -1,
+			"settings":
+			{
+				"buffer_size": 3706,
+				"line_ending": "Windows"
+			}
+		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -93,10 +128,12 @@
 	],
 	"file_history":
 	[
-		"/C/Program Files (x86)/Arduino/libraries/MeetAndroid/MeetAndroid.cpp",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/todo.txt",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Notes.cpp",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Motor.cpp",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Comm.cpp",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/GuitoArduino.ino",
+		"/C/Program Files (x86)/Arduino/libraries/MeetAndroid/MeetAndroid.cpp",
+		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Motor.cpp",
 		"/C/Users/Mateen/Dropbox/Misc/Notepad/My vocal range",
 		"/C/Users/Mateen/Documents/GitHub/TarsosDSP/android/be/tarsos/dsp/io/android/AudioDispatcherFactory.java",
 		"/C/Users/Mateen/Documents/GitHub/TarsosDSP/android/be/tarsos/dsp/io/android/AndroidAudioInputStream.java",
@@ -112,12 +149,10 @@
 		"/C/Users/Mateen/Documents/TortoiseSVN/android-guitar-tuner/fft_jni/fft.h",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/pitch_detector_yin_src/src/ui/SimplePitchDetector.java",
 		"/C/Users/Mateen/Dropbox/random physics.txt",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/todo.txt",
 		"/C/Users/Mateen/Documents/TortoiseSVN/android-guitar-tuner/res/values/strings.xml",
 		"/C/Users/Mateen/AppData/Local/Temp/7zO1CAF.tmp/pdj_test_class.java",
 		"/C/Users/Mateen/AppData/Local/Temp/7zO24BE.tmp/tarsosdsppitch.java",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Motor.h",
-		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Comm.cpp",
 		"/C/Users/Mateen/Documents/GitHub/Guito-Automatic-Guitar-Tuner/GuitoArduino/Notes.h",
 		"/arduino/hardware/tools/avr/avr/include/stdlib.h",
 		"/C/Users/Mateen/Downloads/code_51565.txt",
@@ -283,8 +318,124 @@
 	"groups":
 	[
 		{
+			"selected": 1,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "todo.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 314,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								312,
+								312
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "Notes.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3732,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 249.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "Notes.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1076,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/C/Users/Mateen/AppData/Local/Temp/7zO97AF.tmp/plotDynamic.java",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3706,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								444,
+								444
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Java/Java.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 1.0,
+						"translation.y": 376.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -754,6 +905,10 @@
 	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1416947372.297223":
 	{
 		"height": 172.0
+	},
+	"output.build|C:\\Users\\Mateen\\Documents\\GitHub\\Guito-Automatic-Guitar-Tuner\\GuitoArduino|1417471951.490944":
+	{
+		"height": 37.0
 	},
 	"output.build|c:\\program files (x86)\\arduino\\libraries\\Servo\\examples\\Knob|1416934549.681948":
 	{

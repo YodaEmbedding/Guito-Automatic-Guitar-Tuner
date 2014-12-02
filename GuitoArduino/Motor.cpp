@@ -37,11 +37,11 @@ int angularVelocityToPower(double w)
 }
 
 
-// Spin motor at given power [-255, 255]
+// Spin motor at given power [-100, 100]
 void rotateMotor(int pwr)
 {
-  int val = constrain(pwr, -255, 255);
-  val = map(pwr, -255, 255, SERVO_MIN, SERVO_MAX);
+  int val = constrain(pwr, -100, 100);
+  val = map(pwr, -100, 100, SERVO_MIN, SERVO_MAX);
 
 #ifdef SERVO_WRITEUS
   if(pwr == 0)
