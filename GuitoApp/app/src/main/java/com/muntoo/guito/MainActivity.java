@@ -51,16 +51,16 @@ public class MainActivity extends Activity
 
 	String[] tuning_notes = {
 			// <Concert pitch>, <Notes from top/thickest to bottom/thinnest string>
-			"440, E2 A2 D3 G3 B3 E4", // Standard Tuning
-			"440, D2 A2 D3 G3 B3 E4", // Drop D
+			"440, E2 A2 D3 G3 B3 E4",      // Standard Tuning
+			"440, D2 A2 D3 G3 B3 E4",      // Drop D
 			"440, Eb2 Ab2 Db3 Gb3 Bb3 Eb4" // E flat (Standard, half-step down)
 	};
 
 	String[] tuning_pitches = {
 			// <Concert pitch>, <Notes from top/thickest to bottom/thinnest string>
 			"440, 82 110 147 196 247 330", // Standard Tuning
-			"440, 82 110 147 196 247 330", // Drop D
-			"440, 82 110 147 196 247 330" // E flat (Standard, half-step down)
+			"440, 73 110 147 196 247 330", // Drop D
+			"440, 78 104 139 185 233 311"  // E flat (Standard, half-step down)
 	};
 
 	private int TUNING_STANDARD = 0;
