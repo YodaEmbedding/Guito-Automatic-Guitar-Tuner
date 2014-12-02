@@ -55,10 +55,12 @@ public class MainActivity extends Activity
 	private MovingAverage avgPitch = new MovingAverage();
 	// private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 	private ScheduledExecutorService executor2 = Executors.newSingleThreadScheduledExecutor();
-	private int GRAPH_POINTS = 80;
 
 	public int counter = 0;
 	public int counterGraph = 0;
+
+	private int GRAPH_POINTS = 80;
+	private int UPDATES_PER_SECOND = 10;
 
 	String[] tuning_notes = {
 			// <Concert pitch>, <Notes from top/thickest to bottom/thinnest string>
@@ -236,21 +238,23 @@ public class MainActivity extends Activity
 					//Log.e(TAG, "sendPitchTask() end");
 				}
 
-				if(counterGraph >= GRAPH_POINTS)
+				if(counterGraph >= GRAPH_POINTS / UPDATES_PER_SECOND)
 				{
 					counterGraph = 0;
 
 					final GraphView graphView = new LineGraphView(context, "Pitch (Hz) vs Time (1s)");
 
 					GraphView.GraphViewData[] data = new GraphView.GraphViewData[GRAPH_POINTS];
+					Integer[] store = avgPitch.getStore();
 
 					for (int i = 0; i < GRAPH_POINTS; i++) {
-						data[i] = new GraphView.GraphViewData(1.0 * i / GRAPH_POINTS, avgPitch.store[i]);
+						data[i] = new GraphView.GraphViewData(1.0 * i / GRAPH_POINTS, store[i]);
 					}
 
-					GraphViewSeries seriesRaw = new GraphViewSeries("Raw", new GraphViewSeries.GraphViewSeriesStyle(Color.rgb(200, 50, 00), 3), data);
+					GraphViewSeries seriesRaw = new GraphViewSeries("Raw", new GraphViewSeries.GraphViewSeriesStyle(getProgressColor(), 3), data);
 
-					// Not static... graphView.removeAllSeries();
+					// Not static...?
+					graphView.removeAllSeries();
 					graphView.addSeries(seriesRaw);
 					//graphView.addSeries(seriesAvg);
 					//graphView.addSeries(seriesFiltered);

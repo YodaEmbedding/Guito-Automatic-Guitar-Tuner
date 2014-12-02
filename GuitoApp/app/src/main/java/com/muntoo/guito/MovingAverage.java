@@ -1,5 +1,7 @@
 package com.muntoo.guito;
 
+import android.util.Log;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -16,11 +18,33 @@ public class MovingAverage
 	private Queue<Integer> queue = new LinkedList<Integer>();
 	private Object[] sorted;
 
-	public Integer[] store = new Integer[80];
+	private Integer[] store = new Integer[STORE_MAX];
 	private int storeCount = 0;
 
 	private Integer average;
 	private boolean resetflag = true;
+
+	MovingAverage()
+	{
+		for(int i = 0; i < STORE_MAX; ++i)
+		{
+			store[i] = -1;
+		}
+	}
+
+	Integer[] getStore()
+	{
+		Integer[] storage = new Integer[STORE_MAX];
+		for(int i = 0; i < STORE_MAX; ++i)
+		{
+			int j = (storeCount + i) >= STORE_MAX ?
+					(storeCount + i - STORE_MAX) :
+					(storeCount + i);
+
+			storage[i] = store[j];
+		}
+		return storage;
+	}
 
 	int getAverage()
 	{
